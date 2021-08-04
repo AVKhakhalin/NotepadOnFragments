@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class Notepad implements Parcelable
-{
+public class Notepad implements Parcelable {
     /* ВАЖНО!!!
     Нулевой элемент всегда задан по-умолчанию!
     Поэтому работа с классом осуществляется с 1 элемента.
@@ -40,8 +39,7 @@ public class Notepad implements Parcelable
     // Массив дней создания заметок
     private int[] dateDay;
 
-    public Notepad()
-    {
+    public Notepad() {
         name = new ArrayList<String>();
         name.add(NAME_EMPTY_NOTE);
         description = new ArrayList<String>();
@@ -58,36 +56,30 @@ public class Notepad implements Parcelable
     }
 
     // Вывести список всех дат записей, без учёта нулевого элемента
-    public String getAllDates()
-    {
+    public String getAllDates() {
         String result = "";
-        for (int i = 1; i <= getNumberElements(); i++)
-        {
+        for (int i = 1; i <= getNumberElements(); i++) {
             result += String.format("%s.%s.%d\n", (dateDay[i] < 10 ? "0" : "") + String.valueOf(dateDay[i]), (dateMonth[i] < 10 ? "0" : "") + String.valueOf(dateMonth[i]), dateYear[i]);
         }
         return result;
     }
 
     // Вывести список всех имен записей, без учёта нулевого элемента
-    public String getAllNames()
-    {
+    public String getAllNames() {
         String result = "";
-        for (int i = 1; i <= getNumberElements(); i++)
-        {
+        for (int i = 1; i <= getNumberElements(); i++) {
             result += name.get(i) + "\n";
         }
         return result;
     }
 
     // Вывести количество элементов без учёта нулевого элемента, всегда присутствующего по-умолчанию
-    public int getNumberElements()
-    {
+    public int getNumberElements() {
         return name.size() - 1;
     }
 
     // Добавить новый элемент
-    public void add(String newName, String newDescription)
-    {
+    public void add(String newName, String newDescription) {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int numberCurElement = name.size();
         name.add(newName);
@@ -101,14 +93,11 @@ public class Notepad implements Parcelable
             int m = dateMonth[numberCurElement];
             dateDay[numberCurElement] = calendar.get(Calendar.DAY_OF_MONTH);
             int d = dateDay[numberCurElement];
-        }
-        else
-        {
+        } else {
             int[] tempArrayYear = new int[dateYear.length];
             int[] tempArrayMonth = new int[dateYear.length];
             int[] tempArrayDay = new int[dateYear.length];
-            for (int i = 0; i < dateYear.length; i++)
-            {
+            for (int i = 0; i < dateYear.length; i++) {
                 tempArrayYear[i] = dateYear[i];
                 tempArrayMonth[i] = dateMonth[i];
                 tempArrayDay[i] = dateDay[i];
@@ -116,8 +105,7 @@ public class Notepad implements Parcelable
             dateYear = new int[numberCurElement + DELTA_CHANGE_INTARRAYS];
             dateMonth = new int[numberCurElement + DELTA_CHANGE_INTARRAYS];
             dateDay = new int[numberCurElement + DELTA_CHANGE_INTARRAYS];
-            for (int i = 0; i < tempArrayYear.length; i++)
-            {
+            for (int i = 0; i < tempArrayYear.length; i++) {
                 dateYear[i] = tempArrayYear[i];
                 dateMonth[i] = tempArrayMonth[i];
                 dateDay[i] = tempArrayDay[i];
@@ -129,10 +117,8 @@ public class Notepad implements Parcelable
     }
 
     // Удалить запись
-    public void remove(int index)
-    {
-        if (index > 0)
-        {
+    public void remove(int index) {
+        if (index > 0) {
             name.remove(index);
             description.remove(index);
             text.remove(index);
@@ -143,10 +129,8 @@ public class Notepad implements Parcelable
 
             int counter = 0;
 
-            for (int i = 0; i < dateYear.length; i++)
-            {
-                if (i != index)
-                {
+            for (int i = 0; i < dateYear.length; i++) {
+                if (i != index) {
                     tempArrayYear[counter] = dateYear[i];
                     tempArrayMonth[counter] = dateMonth[i];
                     tempArrayDay[counter] = dateDay[i];
@@ -156,8 +140,7 @@ public class Notepad implements Parcelable
             dateYear = new int[tempArrayYear.length];
             dateMonth = new int[tempArrayYear.length];
             dateDay = new int[tempArrayYear.length];
-            for (int i = 0; i < dateYear.length; i++)
-            {
+            for (int i = 0; i < dateYear.length; i++) {
                 dateYear[i] = tempArrayYear[counter];
                 dateMonth[i] = tempArrayMonth[counter];
                 dateDay[i] = tempArrayDay[counter];
@@ -167,21 +150,16 @@ public class Notepad implements Parcelable
 
     // Получить имя заметки
     public String getName(int index) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             return name.get(index);
-        }
-        else
-        {
+        } else {
             return "";
         }
     }
 
     // Установить имя заметки
-    public void setName(int index, String newName)
-    {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+    public void setName(int index, String newName) {
+        if ((index > 0) && (index <= getNumberElements())) {
             name.set(index, newName);
         }
     }
@@ -189,123 +167,97 @@ public class Notepad implements Parcelable
     // Вывести список всех кратких имен записей, без учёта нулевого элемента
     public String getAllDescription() {
         String result = "";
-        for (int i = 1; i <= getNumberElements(); i++)
-        {
+        for (int i = 1; i <= getNumberElements(); i++) {
             result += description.get(i) + "\n";
         }
         return result;
     }
 
     // Вывести краткое имя записи
-    public String getDescription(int index)
-    {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+    public String getDescription(int index) {
+        if ((index > 0) && (index <= getNumberElements())) {
             return description.get(index);
-        }
-        else
-        {
+        } else {
             return "";
         }
     }
 
     // Установить краткое описание заметки
     public void setDescription(int index, String newDescription) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             description.set(index, newDescription);
         }
     }
 
     // Получить текст заметки
     public String getText(int index) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             return text.get(index);
-        }
-        else
-        {
+        } else {
             return "";
         }
     }
 
     // Установить текст заметки
     public void setText(int index, String newText) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             text.set(index, newText);
         }
     }
 
     // Получить дату заметки
-    public String getDate(int index)
-    {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+    public String getDate(int index) {
+        if ((index > 0) && (index <= getNumberElements())) {
             return String.format("%s.%s.%d\n", (dateDay[index] < 10 ? "0" : "") + String.valueOf(dateDay[index]), (dateMonth[index] < 10 ? "0" : "") + String.valueOf(dateMonth[index]), dateYear[index]);
-        }
-        else
-        {
+        } else {
             return "";
         }
     }
 
     // Установить год заметки
     public void setDateYear(int index, int newDateYear) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             dateYear[index] = newDateYear;
         }
     }
 
     // Получить год заметки
     public int getDateYear(int index) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             return dateYear[index];
-        }
-        else
-        {
+        } else {
             return -1;
         }
     }
 
     // Получить месяц заметки
     public int getDateMonth(int index) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             return dateMonth[index];
-        }
-        else
-        {
+        } else {
             return -1;
         }
     }
 
     // Установить месяц заметки
     public void setDateMonth(int index, int newDateMonth) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             dateMonth[index] = newDateMonth;
         }
     }
 
     // Получить день заметки
     public int getDateDay(int index) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             return dateDay[index];
-        }
-        else
-        {
+        } else {
             return -1;
         }
     }
 
     // Установить день заметки
     public void setDateDay(int index, int newDateDay) {
-        if ((index > 0) && (index <= getNumberElements()))
-        {
+        if ((index > 0) && (index <= getNumberElements())) {
             dateDay[index] = newDateDay;
         }
     }
