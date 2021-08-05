@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -18,8 +19,7 @@ public class ListNotesFragment extends Fragment {
 
     Notepad notepad;
 
-    public static ListNotesFragment newInstance(Notepad notepad)
-    {
+    public static ListNotesFragment newInstance(Notepad notepad) {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(MainActivity.KEY_NOTEPAD, notepad);
@@ -32,9 +32,10 @@ public class ListNotesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Восстановление класса notepad в текущем фрагменте
-        if (getArguments() != null)
-        {
+        Toast.makeText(getContext(), String.valueOf(getArguments()), Toast.LENGTH_SHORT).show();
+        if (getArguments() != null) {
             this.notepad = getArguments().getParcelable(MainActivity.KEY_NOTEPAD);
+            Toast.makeText(getContext(), "Передача notepad во фрагмент ListNotesFragment прошла", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -43,47 +44,40 @@ public class ListNotesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         LinearLayout linearLayout = (LinearLayout) view;
 
-        // Считывание класса notepad
-
-/*
-        if (savedInstanceState != null)
-        {
-            notepad = this.getArguments().getParcelable(MainActivity.KEY_NOTEPAD);
-            textView.setText(notepad.getName(1));
-        }
-        else
-        {
-            textView.setText("savedInstanceState is empty");
-        }
-*/
-
-/*        // Получение класса notepad из MainActivity
-        MainActivity mainActivity = (MainActivity) getActivity();
-        notepad = mainActivity.getNotepad();*/
-
         // Установка значения текстового поля
-        for (int i = 1; i <= notepad.getNumberElements(); i++)
-        {
+        for (int i = 0; i <= notepad.getNumberElements(); i++) {
             TextView textView = new TextView(getContext());
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-            {
-                textView.setText(notepad.getDescription(i));
-            }
-            else
-            {
-                textView.setText(notepad.getName(i));
+            if (i > 0) {
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    textView.setText(i + "." + notepad.getDescription(i) + "\n" + notepad.getDate(i));
+                } else {
+                    textView.setText(i + "." + notepad.getName(i) + "\n" + notepad.getDate(i));
+                }
+            } else {
+                textView.setText(notepad.getName(i) + "\n");
             }
             // Форматирование текстового поля
             textView.setTextSize(20);
             linearLayout.addView(textView);
-            textView.setOnClickListener(new View.OnClickListener()
-            {
+            int sendedIndex = i;
+            textView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v){
-                    // Загрузка второго фрагмента
+                public void onClick(View v) {
+                    // Загрузка фрагмента c текстом TextFragment
+                    requireActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.text_container, TextFragment.newInstance(notepad, sendedIndex))
+                            .commit();
                 }
             });
         }
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(MainActivity.KEY_NOTEPAD, notepad);
+        super.onSaveInstanceState(outState);
     }
 }

@@ -24,7 +24,7 @@ public class Notepad implements Parcelable {
     // Начальный размер массива
     private final int START_SIZE_INTARRAYS = DELTA_CHANGE_INTARRAYS;
     // По-умолчанию, короткое название пустой записи
-    private final String NAME_EMPTY_NOTE = "ДОБАВИТЬ ЗАПИСЬ";
+    private final String NAME_EMPTY_NOTE = "СОЗДАТЬ ЗАМЕТКУ";
 
     // Список имен заметок
     private ArrayList<String> name;
@@ -34,7 +34,7 @@ public class Notepad implements Parcelable {
     private ArrayList<String> text;
     // Массив годов создания заметок
     private int[] dateYear;
-    // Массив месяцов создания заметок
+    // Массив месяцев создания заметок
     private int[] dateMonth;
     // Массив дней создания заметок
     private int[] dateDay;
@@ -88,11 +88,8 @@ public class Notepad implements Parcelable {
         if (numberCurElement < dateYear.length) // Проверка на превышение размера списков над размерами массивов
         {
             dateYear[numberCurElement] = calendar.get(Calendar.YEAR);
-            int y = dateYear[numberCurElement];
             dateMonth[numberCurElement] = calendar.get(Calendar.MONTH) + 1;
-            int m = dateMonth[numberCurElement];
             dateDay[numberCurElement] = calendar.get(Calendar.DAY_OF_MONTH);
-            int d = dateDay[numberCurElement];
         } else {
             int[] tempArrayYear = new int[dateYear.length];
             int[] tempArrayMonth = new int[dateYear.length];
@@ -150,7 +147,7 @@ public class Notepad implements Parcelable {
 
     // Получить имя заметки
     public String getName(int index) {
-        if ((index > 0) && (index <= getNumberElements())) {
+        if ((index >= 0) && (index <= getNumberElements())) {
             return name.get(index);
         } else {
             return "";

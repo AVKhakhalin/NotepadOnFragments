@@ -2,17 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
-    <FrameLayout
-        android:id="@+id/list_container"
+    <ScrollView
         android:layout_width="@dimen/zero_size"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="@color/background_list_color">
 
-    <FrameLayout
-        android:id="@+id/text_container"
+        <FrameLayout
+            android:id="@+id/list_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
+
+    <ScrollView
         android:layout_width="@dimen/zero_size"
-        android:layout_weight="3"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:background="@color/background_text_color">
+
+        <FrameLayout
+            android:id="@+id/text_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
 </LinearLayout>
