@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -16,9 +15,9 @@ import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
 public class TextFragment extends Fragment {
 
-    Notepad notepad;
+    private Notepad notepad = null;
     private int index = 1;
-    EditText editText;
+    private EditText editText = null;
 
     public static TextFragment newInstance(Notepad notepad, int index) {
         TextFragment textFragment = new TextFragment();
@@ -69,7 +68,6 @@ public class TextFragment extends Fragment {
         // Получение класса notepad из MainActivity
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setNotepad(notepad);
-        Toast.makeText(mainActivity, "Сохранение заметки", Toast.LENGTH_SHORT).show();
         super.onStop();
     }
 }

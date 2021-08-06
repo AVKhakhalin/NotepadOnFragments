@@ -10,9 +10,11 @@ import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.ListNotesFragm
 
 public class MainActivity extends AppCompatActivity {
 
+    public static int LIST_NAMES_SIZE = 23;
+    public static int LIST_DATES_SIZE = 17;
     public static String KEY_NOTEPAD = "Notepad";
     public static String KEY_INDEX = "Index";
-    Notepad notepad;
+    private Notepad notepad = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
     private void InitNotepad() {
         // Инициализация класса Notepad
         notepad = new Notepad();
-        notepad.add("Первая", "Первый элемент");
-        notepad.add("Вторая", "Второй элемент");
-        notepad.add("Третья", "Третий элемент");
-        notepad.add("Четвёртая", "Четвёртый элемент");
-        notepad.add("Пятая", "Пятый элемент");
-        notepad.setText(1, "Текст первого элемента");
-        notepad.setText(2, "Текст второго элемента");
-        notepad.setText(3, "Текст третьего элемента");
-        notepad.setText(4, "Текст четвёртого элемента");
-        notepad.setText(5, "Текст пятого элемента");
+        notepad.add("ПЕРВ.ЗАМ.", "Первая заметка");
+        notepad.add("ВТОР.ЗАМ.", "Вторая заметка");
+        notepad.add("ТРЕТ.ЗАМ.", "Третья заметка");
+        notepad.add("ЧЕТВ.ЗАМ.", "Четвёртая заметка");
+        notepad.add("ПЯТ.ЗАМ.", "Пятая заметка");
+        notepad.setText(5, "Текст первой заметки");
+        notepad.setText(4, "Текст второй заметки");
+        notepad.setText(3, "Текст третьей заметки");
+        notepad.setText(2, "Текст четвёртой заметки");
+        notepad.setText(1, "Текст пятой заметки");
     }
 
     // Метод для считывания класса во фрагменты

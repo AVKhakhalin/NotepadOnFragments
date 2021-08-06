@@ -20,12 +20,16 @@ import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
 public class ListNotesFragment extends Fragment {
 
-    Notepad notepad;
-    int newYear;
-    int newMonth;
-    int newDay;
+    private Notepad notepad;
+    private int newYear;
+    private int newMonth;
+    private int newDay;
 
-    Calendar calendar = Calendar.getInstance();
+    private Calendar calendar = Calendar.getInstance();
+    private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
+    private int indexChoisedElement = 0;
+    private LinearLayout linearLayout = null;
+    TextView newTextView_Name = null;
 
     public static ListNotesFragment newInstance(Notepad notepad) {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
@@ -48,7 +52,8 @@ public class ListNotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        LinearLayout linearLayout = (LinearLayout) view;
+//        LinearLayout linearLayout = (LinearLayout) view;
+        linearLayout = (LinearLayout) view;
 
         // Установка значения текстового поля
         for (int i = 0; i <= notepad.getNumberElements(); i++) {
@@ -57,40 +62,64 @@ public class ListNotesFragment extends Fragment {
             TextView textView_Name = new TextView(getContext());
             if (i > 0) {
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    textView_Name.setText(i + "." + notepad.getDescription(i));
+                    textView_Name.setText(notepad.getDescription(i));
                 } else {
-                    textView_Name.setText(i + "." + notepad.getName(i));
+                    textView_Name.setText(notepad.getName(i));
                 }
             } else {
                 textView_Name.setText(notepad.getName(i) + "\n");
             }
             // Форматирование текстового поля
-            textView_Name.setTextSize(23);
+            textView_Name.setTextSize(MainActivity.LIST_NAMES_SIZE);
             linearLayout.addView(textView_Name);
-            textView_Name.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Загрузка фрагмента c текстом TextFragment
-                    requireActivity()
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.text_container, TextFragment.newInstance(notepad, sendedIndex))
-                            .commit();
-                }
-            });
+            if (i == 0) {
+                textView_Name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Добавление новой заметки
+                        notepad.add("", "");
+                        // Перезапуск фрагмента со списком для отображения новой заметки
+                        requireActivity()
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.list_container, ListNotesFragment.newInstance(notepad))
+                                .commit();
+                        // Загрузка фрагмента c текстом TextFragment
+                        indexChoisedElement = 1;
+                        requireActivity()
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.text_container, TextFragment.newInstance(notepad, indexChoisedElement))
+                                .commit();
+                    }
+                });
+            } else {
+                textView_Name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        indexChoisedElement = sendedIndex;
+                        // Загрузка фрагмента c текстом TextFragment
+                        requireActivity()
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.text_container, TextFragment.newInstance(notepad, sendedIndex))
+                                .commit();
+                    }
+                });
+            }
 
             // Отображение даты заметки
             TextView textView_Date = new TextView(getContext());
             if (i > 0) {
                 textView_Date.setText(notepad.getDate(i));
                 // Форматирование текстового поля
-                textView_Date.setTextSize(17);
+                textView_Date.setTextSize(MainActivity.LIST_DATES_SIZE);
                 linearLayout.addView(textView_Date);
                 textView_Date.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // Показать DatePicker для изменения даты заметки
-                        showDatePicker(sendedIndex, textView_Date, view);
+                        showDatePicker(sendedIndex, textView_Date);
                     }
                 });
             } else {
@@ -101,7 +130,7 @@ public class ListNotesFragment extends Fragment {
     }
 
     // Показать DatePicker
-    private void showDatePicker(int sendedIndex, TextView textView, View v) {
+    private void showDatePicker(int sendedIndex, TextView textView) {
         // Устанавливаем новую дату
         DatePickerDialog.OnDateSetListener datePickerDialog = new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -128,6 +157,7 @@ public class ListNotesFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(MainActivity.KEY_NOTEPAD, notepad);
+        outState.putInt(KEY_INDES_CHOISED_ELEMENT, indexChoisedElement);
         super.onSaveInstanceState(outState);
     }
 }

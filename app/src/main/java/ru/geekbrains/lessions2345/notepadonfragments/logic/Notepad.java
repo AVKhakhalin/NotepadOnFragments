@@ -82,11 +82,23 @@ public class Notepad implements Parcelable {
     public void add(String newName, String newDescription) {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int numberCurElement = name.size();
-        name.add(newName);
-        description.add(newDescription);
+        if (newName.equals("")) {
+            name.add("НОВ.ЗАМ.");
+        } else {
+            name.add(newName);
+        }
+        if (newDescription.equals("")) {
+            if (newName.equals("")) {
+                description.add("НОВАЯ ЗАМЕТКА");
+            } else {
+                description.add(newName);
+            }
+        } else {
+            description.add(newDescription);
+        }
         text.add("");
-        if (numberCurElement < dateYear.length) // Проверка на превышение размера списков над размерами массивов
-        {
+        // Проверка на превышение размера списков над размерами массивов
+        if (numberCurElement < dateYear.length) {
             dateYear[numberCurElement] = calendar.get(Calendar.YEAR);
             dateMonth[numberCurElement] = calendar.get(Calendar.MONTH) + 1;
             dateDay[numberCurElement] = calendar.get(Calendar.DAY_OF_MONTH);
@@ -111,6 +123,27 @@ public class Notepad implements Parcelable {
             dateMonth[numberCurElement] = calendar.get(Calendar.MONTH) + 1;
             dateDay[numberCurElement] = calendar.get(Calendar.DAY_OF_MONTH);
         }
+        // Ранжирование заметок: последняя заметка становится первой, а первая заметка - последней
+        String firstName = name.get(getNumberElements());
+        String firstDescription = description.get(getNumberElements());
+        String firstText = text.get(getNumberElements());
+        int firstDateYear = dateYear[getNumberElements()];
+        int firstDateMonth = dateMonth[getNumberElements()];
+        int firstDateDay = dateDay[getNumberElements()];
+        for (int i = getNumberElements() - 1; i > 0; i--) {
+            name.set(i + 1, name.get(i));
+            description.set(i + 1, description.get(i));
+            text.set(i + 1, text.get(i));
+            dateYear[i + 1] = dateYear[i];
+            dateMonth[i + 1] = dateMonth[i];
+            dateDay[i + 1] = dateDay[i];
+        }
+        name.set(1, firstName);
+        description.set(1, firstDescription);
+        text.set(1, firstText);
+        dateYear[1] = firstDateYear;
+        dateMonth[1] = firstDateMonth;
+        dateDay[1] = firstDateDay;
     }
 
     // Удалить запись
