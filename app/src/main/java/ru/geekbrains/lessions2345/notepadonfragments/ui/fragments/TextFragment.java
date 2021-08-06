@@ -16,14 +16,17 @@ import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 public class TextFragment extends Fragment {
 
     private Notepad notepad = null;
-    private int index = 1;
+    private int index = 0;
     private EditText editText = null;
+    private boolean isCreatedNewNote = false;
+    private int numberPreviousElementsInNotepad = 1;
 
-    public static TextFragment newInstance(Notepad notepad, int index) {
+    public static TextFragment newInstance(Notepad notepad, int index, boolean isCreatedNewNote) {
         TextFragment textFragment = new TextFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(MainActivity.KEY_NOTEPAD, notepad);
         bundle.putInt(MainActivity.KEY_INDEX, index);
+        bundle.putBoolean(MainActivity.KEY_CREATED_NEW_NOTE, isCreatedNewNote);
         textFragment.setArguments(bundle);
         return textFragment;
     }
@@ -34,8 +37,15 @@ public class TextFragment extends Fragment {
 
         // Восстановление данных notepad и index
         if (getArguments() != null) {
-            notepad = getArguments().getParcelable(MainActivity.KEY_NOTEPAD);
+//            notepad = getArguments().getParcelable(MainActivity.KEY_NOTEPAD);
+            MainActivity mainActivity = (MainActivity) getActivity();
+            notepad = mainActivity.getNotepad();
+            numberPreviousElementsInNotepad = notepad.getNumberElements();
             index = getArguments().getInt(MainActivity.KEY_INDEX);
+            isCreatedNewNote = getArguments().getBoolean(MainActivity.KEY_CREATED_NEW_NOTE);
+            if (isCreatedNewNote == true) {
+                notepad.setText(1, "");
+            }
         }
     }
 
@@ -64,9 +74,14 @@ public class TextFragment extends Fragment {
 
     @Override
     public void onStop() {
-        notepad.setText(index, String.valueOf(editText.getText()));
-        // Получение класса notepad из MainActivity
         MainActivity mainActivity = (MainActivity) getActivity();
+        Notepad newNotepad = mainActivity.getNotepad();
+        if (newNotepad.getNumberElements() == numberPreviousElementsInNotepad) {
+            notepad.setText(index, String.valueOf(editText.getText()));
+        } else {
+            notepad.setText(index + 1, String.valueOf(editText.getText()));
+        }
+        // Передача класса notepad в MainActivity
         mainActivity.setNotepad(notepad);
         super.onStop();
     }

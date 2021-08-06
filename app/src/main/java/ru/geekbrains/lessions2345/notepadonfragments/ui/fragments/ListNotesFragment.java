@@ -29,7 +29,6 @@ public class ListNotesFragment extends Fragment {
     private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
     private int indexChoisedElement = 0;
     private LinearLayout linearLayout = null;
-    TextView newTextView_Name = null;
 
     public static ListNotesFragment newInstance(Notepad notepad) {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
@@ -52,7 +51,6 @@ public class ListNotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-//        LinearLayout linearLayout = (LinearLayout) view;
         linearLayout = (LinearLayout) view;
 
         // Установка значения текстового поля
@@ -78,6 +76,8 @@ public class ListNotesFragment extends Fragment {
                     public void onClick(View v) {
                         // Добавление новой заметки
                         notepad.add("", "");
+                        MainActivity mainActivity = (MainActivity) getActivity();
+                        mainActivity.setNotepad(notepad);
                         // Перезапуск фрагмента со списком для отображения новой заметки
                         requireActivity()
                                 .getSupportFragmentManager()
@@ -89,7 +89,7 @@ public class ListNotesFragment extends Fragment {
                         requireActivity()
                                 .getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.text_container, TextFragment.newInstance(notepad, indexChoisedElement))
+                                .replace(R.id.text_container, TextFragment.newInstance(notepad, indexChoisedElement, true))
                                 .commit();
                     }
                 });
@@ -102,7 +102,7 @@ public class ListNotesFragment extends Fragment {
                         requireActivity()
                                 .getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.text_container, TextFragment.newInstance(notepad, sendedIndex))
+                                .replace(R.id.text_container, TextFragment.newInstance(notepad, sendedIndex, false))
                                 .commit();
                     }
                 });

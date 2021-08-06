@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     public static int LIST_DATES_SIZE = 17;
     public static String KEY_NOTEPAD = "Notepad";
     public static String KEY_INDEX = "Index";
+    public static String KEY_CREATED_NEW_NOTE = "CreatedNewNote";
     private Notepad notepad = null;
 
     @Override
