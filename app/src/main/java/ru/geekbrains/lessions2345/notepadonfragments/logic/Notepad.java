@@ -20,7 +20,7 @@ public class Notepad implements Parcelable {
     Сделано для того, чтобы лишний раз не переписывать массив при копировании
     В каком-то роде, это буфер пустых элементов для ускорения работы с данным классом
     К сожалению, метод Parcelable не умеет работать с ArrayList<Integer>, поэтому приходится применять смешанные типы данных */
-    private final int DELTA_CHANGE_INTARRAYS = 3;
+    private final int DELTA_CHANGE_INTARRAYS = 10;
     // Начальный размер массива
     private final int START_SIZE_INTARRAYS = DELTA_CHANGE_INTARRAYS;
     // По-умолчанию, короткое название пустой записи
