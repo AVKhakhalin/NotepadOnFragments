@@ -19,8 +19,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Инициализация класса notepad
         InitNotepad();
 
+        // Отображение фрагмента со списком заметок
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
