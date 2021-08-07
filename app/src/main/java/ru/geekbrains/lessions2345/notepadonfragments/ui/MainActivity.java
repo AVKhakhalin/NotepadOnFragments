@@ -6,9 +6,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.Notepad;
@@ -34,11 +39,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Инициализация класса notepad
-        InitNotepad();
-
-        // Установка AppBarMenu
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        initNotepad();
 
         // Отображение фрагмента со списком заметок
         if (savedInstanceState == null) {
@@ -47,9 +48,50 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.list_container, ListNotesFragment.newInstance(notepad))
                     .commit();
         }
+
+        // Установка AppBarMenu
+        setupAppBarMenu();
+
+        // Установка DrawNavigationMenu
+        setupDrawNavigationMenu();
     }
 
-    private void InitNotepad() {
+    private void setupDrawNavigationMenu() {
+        // Установка DrawerNavigationMenu
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.app_name, // Строки для людей с ограниченными возможностями
+                R.string.app_name // Строки для людей с ограниченными возможностями
+        );
+        drawerLayout.addDrawerListener(toggle);
+        // Здсеь сцепляется шторка с нашим тулбаром (верхней части) и выезжающей шторки. Синхронизирует ToolBar и NavigationDrawer
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                // Метод для закрытия выплывающего меню после нажатия на кнопку
+                drawerLayout.closeDrawer(GravityCompat.START);
+
+                Toast.makeText(MainActivity.this, "Вы нажали на кнопку", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
+    private void setupAppBarMenu() {
+        // Установка меню AppBarMenu
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void initNotepad() {
         // Инициализация класса Notepad
         notepad = new Notepad();
         notepad.add("ПЕРВ.ЗАМ.", "Первая заметка");
@@ -80,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    // Методы для реализации AppBarMenu
+    // Создание меню AppBarMenu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_appbar, menu);
@@ -103,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // Установка слушателя на меню AppBarMenu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
