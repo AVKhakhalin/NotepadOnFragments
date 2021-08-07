@@ -8,5 +8,5 @@
     <string name="action_show_card_note_text">Посмотреть карту заметки</string>
     <string name="action_send_note_text">Переслать заметку</string>
     <string name="action_add_link_note_text">Добавить ссылку заметке</string>
-    <string name=" ">App Title</string>
+    <string name="app_bar_title"></string>
 </resources>
