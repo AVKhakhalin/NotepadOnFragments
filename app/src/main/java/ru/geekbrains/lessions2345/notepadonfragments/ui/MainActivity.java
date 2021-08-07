@@ -1,8 +1,14 @@
 package ru.geekbrains.lessions2345.notepadonfragments.ui;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.Notepad;
@@ -22,8 +28,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Восстановление класса notepad после поворота экрана
+        if (savedInstanceState != null) {
+            notepad = savedInstanceState.getParcelable(KEY_NOTEPAD);
+        }
+
         // Инициализация класса notepad
         InitNotepad();
+
+        // Установка AppBarMenu
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Отображение фрагмента со списком заметок
         if (savedInstanceState == null) {
@@ -57,5 +72,64 @@ public class MainActivity extends AppCompatActivity {
     // Метод для изменения класса notepad через фрагменты
     public void setNotepad(Notepad notepad) {
         this.notepad = notepad;
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(KEY_NOTEPAD, notepad);
+        super.onSaveInstanceState(outState);
+    }
+
+    // Методы для реализации AppBarMenu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_appbar, menu);
+
+        MenuItem actionSearch = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) actionSearch.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            // Изменение одного за другим
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.action_close) {
+            Toast.makeText(this, "Закрыть заметку", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.action_save) {
+            Toast.makeText(this, "Сохранить заметку", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.action_filter) {
+            Toast.makeText(this, "Фильтр вывода заметок", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.action_delete) {
+            Toast.makeText(this, "Удалить заметку", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.action_show_card) {
+            Toast.makeText(this, "Показать карточку заметки", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.action_send) {
+            Toast.makeText(this, "Переслать заметку", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (itemId == R.id.action_add_link) {
+            Toast.makeText(this, "Добавить ссылку заметке", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
