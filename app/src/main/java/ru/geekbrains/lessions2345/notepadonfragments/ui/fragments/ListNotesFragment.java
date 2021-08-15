@@ -16,9 +16,10 @@ import java.util.Calendar;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.Notepad;
+import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class ListNotesFragment extends Fragment {
+public class ListNotesFragment extends Fragment implements Constants {
 
     private Notepad notepad;
     private int newYear;
@@ -33,7 +34,7 @@ public class ListNotesFragment extends Fragment {
     public static ListNotesFragment newInstance(Notepad notepad) {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(MainActivity.KEY_NOTEPAD, notepad);
+        bundle.putParcelable(KEY_NOTEPAD, notepad);
         listNotesFragment.setArguments(bundle);
         return listNotesFragment;
     }
@@ -41,15 +42,18 @@ public class ListNotesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Восстановление класса notepad в текущем фрагменте
-        if (getArguments() != null) {
-            this.notepad = getArguments().getParcelable(MainActivity.KEY_NOTEPAD);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Восстановление класса notepad в текущем фрагменте
+        if (savedInstanceState == null)
+        {
+            notepad = getArguments().getParcelable(KEY_NOTEPAD);
+        } else {
+            notepad = savedInstanceState.getParcelable(KEY_NOTEPAD);
+        }
+
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         linearLayout = (LinearLayout) view;
 
@@ -68,7 +72,7 @@ public class ListNotesFragment extends Fragment {
                 textView_Name.setText(notepad.getName(i) + "\n");
             }
             // Форматирование текстового поля
-            textView_Name.setTextSize(MainActivity.LIST_NAMES_SIZE);
+            textView_Name.setTextSize(LIST_NAMES_SIZE);
             linearLayout.addView(textView_Name);
             if (i == 0) {
                 textView_Name.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +117,7 @@ public class ListNotesFragment extends Fragment {
             if (i > 0) {
                 textView_Date.setText(notepad.getDate(i));
                 // Форматирование текстового поля
-                textView_Date.setTextSize(MainActivity.LIST_DATES_SIZE);
+                textView_Date.setTextSize(LIST_DATES_SIZE);
                 linearLayout.addView(textView_Date);
                 textView_Date.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -156,7 +160,7 @@ public class ListNotesFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(MainActivity.KEY_NOTEPAD, notepad);
+        outState.putParcelable(KEY_NOTEPAD, notepad);
         outState.putInt(KEY_INDES_CHOISED_ELEMENT, indexChoisedElement);
         super.onSaveInstanceState(outState);
     }

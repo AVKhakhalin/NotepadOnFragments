@@ -17,15 +17,11 @@ import com.google.android.material.navigation.NavigationView;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.Notepad;
+import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.ListNotesFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Constants {
 
-    public static int LIST_NAMES_SIZE = 23;
-    public static int LIST_DATES_SIZE = 17;
-    public static String KEY_NOTEPAD = "Notepad";
-    public static String KEY_INDEX = "Index";
-    public static String KEY_CREATED_NEW_NOTE = "CreatedNewNote";
     private Notepad notepad = null;
 
     @Override
