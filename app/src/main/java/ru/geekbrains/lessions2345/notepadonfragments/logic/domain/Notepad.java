@@ -20,9 +20,9 @@ public class Notepad implements Parcelable {
     Сделано для того, чтобы лишний раз не переписывать массив при копировании
     В каком-то роде, это буфер пустых элементов для ускорения работы с данным классом
     К сожалению, метод Parcelable не умеет работать с ArrayList<Integer>, поэтому приходится применять смешанные типы данных */
-    private final int DELTA_CHANGE_INTARRAYS = 10;
+    private final int DELTA_CHANGE_INT_ARRAYS = 10;
     // Начальный размер массива
-    private final int START_SIZE_INTARRAYS = DELTA_CHANGE_INTARRAYS;
+    private final int START_SIZE_INTARRAYS = DELTA_CHANGE_INT_ARRAYS;
     // По-умолчанию, короткое название пустой записи
     private final String NAME_EMPTY_NOTE = "СОЗДАТЬ ЗАМЕТКУ";
 
@@ -111,9 +111,9 @@ public class Notepad implements Parcelable {
                 tempArrayMonth[i] = dateMonth[i];
                 tempArrayDay[i] = dateDay[i];
             }
-            dateYear = new int[numberCurElement + DELTA_CHANGE_INTARRAYS];
-            dateMonth = new int[numberCurElement + DELTA_CHANGE_INTARRAYS];
-            dateDay = new int[numberCurElement + DELTA_CHANGE_INTARRAYS];
+            dateYear = new int[numberCurElement + DELTA_CHANGE_INT_ARRAYS];
+            dateMonth = new int[numberCurElement + DELTA_CHANGE_INT_ARRAYS];
+            dateDay = new int[numberCurElement + DELTA_CHANGE_INT_ARRAYS];
             for (int i = 0; i < tempArrayYear.length; i++) {
                 dateYear[i] = tempArrayYear[i];
                 dateMonth[i] = tempArrayMonth[i];

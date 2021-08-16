@@ -1,5 +1,6 @@
 package ru.geekbrains.lessions2345.notepadonfragments.ui;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,32 +17,36 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
-import ru.geekbrains.lessions2345.notepadonfragments.logic.domain.Notepad;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.CardSourceImplement;
 import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.ListNotesFragment;
 
 public class MainActivity extends AppCompatActivity implements Constants {
 
-    private Notepad notepad = null;
+    private DATA_SETTINGS typeSourceData = null;
+    CardSourceImplement cardSourceImplement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Получение настроек
+        getSettings();
+
         // Восстановление класса notepad после поворота экрана
         if (savedInstanceState != null) {
-            notepad = savedInstanceState.getParcelable(KEY_NOTEPAD);
+            cardSourceImplement = savedInstanceState.getParcelable(KEY_CARD_SOURCE_IMPLEMENT);
+        } else {
+            // Инициализация класса - временного хранилища всех созданных к данному моменту заметок
+            cardSourceImplement = new CardSourceImplement(typeSourceData);
         }
-
-        // Инициализация класса notepad
-        initNotepad();
 
         // Отображение фрагмента со списком заметок
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.list_container, ListNotesFragment.newInstance(notepad))
+                    .replace(R.id.list_container, ListNotesFragment.newInstance())
                     .commit();
         }
 
@@ -87,34 +92,14 @@ public class MainActivity extends AppCompatActivity implements Constants {
         setSupportActionBar(toolbar);
     }
 
-    private void initNotepad() {
-        // Инициализация класса Notepad
-        notepad = new Notepad();
-        notepad.add("ПЕРВ.ЗАМ.", "Первая заметка");
-        notepad.add("ВТОР.ЗАМ.", "Вторая заметка");
-        notepad.add("ТРЕТ.ЗАМ.", "Третья заметка");
-        notepad.add("ЧЕТВ.ЗАМ.", "Четвёртая заметка");
-        notepad.add("ПЯТ.ЗАМ.", "Пятая заметка");
-        notepad.setText(5, "Текст первой заметки");
-        notepad.setText(4, "Текст второй заметки");
-        notepad.setText(3, "Текст третьей заметки");
-        notepad.setText(2, "Текст четвёртой заметки");
-        notepad.setText(1, "Текст пятой заметки");
-    }
-
-    // Метод для считывания класса во фрагменты
-    public Notepad getNotepad() {
-        return notepad;
-    }
-
-    // Метод для изменения класса notepad через фрагменты
-    public void setNotepad(Notepad notepad) {
-        this.notepad = notepad;
+    // Метод для считывания класса getCardSourceImplement во фрагменты
+    public CardSourceImplement getCardSourceImplement() {
+        return cardSourceImplement;
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(KEY_NOTEPAD, notepad);
+        outState.putParcelable(KEY_CARD_SOURCE_IMPLEMENT, cardSourceImplement);
         super.onSaveInstanceState(outState);
     }
 
@@ -170,5 +155,39 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // Сохранение настроек в SharedPreferences
+    private void saveSettings(DATA_SETTINGS typeSourceData) {
+        SharedPreferences sharedPreferences = getSharedPreferences(KEY_DATA_SETTINGS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // Сохранение типа источника данных
+        if (typeSourceData == DATA_SETTINGS.FILE_DATA) {
+            editor.putInt(KEY_DATA_SETTINGS, 1);
+        } else if (typeSourceData == DATA_SETTINGS.FIREBASE_DATA) {
+            editor.putInt(KEY_DATA_SETTINGS, 2);
+        } else if (typeSourceData == DATA_SETTINGS.DATABASE_DATA) {
+            editor.putInt(KEY_DATA_SETTINGS, 3);
+        } else {
+            // Случай, когда typeSourceData == null или typeSourceData == DATA_SETTINGS.TEST_DATA
+            editor.putInt(KEY_DATA_SETTINGS, 0);
+        }
+        editor.apply();
+    }
+
+    // Получение настроек из SharedPreferences
+    private void getSettings() {
+        SharedPreferences sharedPreferences = getSharedPreferences(KEY_DATA_SETTINGS, MODE_PRIVATE);
+        int timeSourceData = sharedPreferences.getInt(KEY_DATA_SETTINGS, 0);
+        if (timeSourceData == 1) {
+            typeSourceData = DATA_SETTINGS.FILE_DATA;
+        } else if (timeSourceData == 2) {
+            typeSourceData = DATA_SETTINGS.FIREBASE_DATA;
+        } else if (timeSourceData == 3) {
+            typeSourceData = DATA_SETTINGS.DATABASE_DATA;
+        } else {
+            // Случай, когда typeSourceData == null или typeSourceData == DATA_SETTINGS.TEST_DATA
+            typeSourceData = DATA_SETTINGS.TEST_DATA;
+        }
     }
 }

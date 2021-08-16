@@ -15,27 +15,22 @@ import androidx.fragment.app.Fragment;
 import java.util.Calendar;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
-import ru.geekbrains.lessions2345.notepadonfragments.logic.domain.Notepad;
 import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
 public class ListNotesFragment extends Fragment implements Constants {
 
-    private Notepad notepad;
     private int newYear;
     private int newMonth;
     private int newDay;
 
     private Calendar calendar = Calendar.getInstance();
     private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
-    private int indexChoisedElement = 0;
+    private int indexChoisedElement = 1;
     private LinearLayout linearLayout = null;
 
-    public static ListNotesFragment newInstance(Notepad notepad) {
+    public static ListNotesFragment newInstance() {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_NOTEPAD, notepad);
-        listNotesFragment.setArguments(bundle);
         return listNotesFragment;
     }
 
@@ -47,29 +42,29 @@ public class ListNotesFragment extends Fragment implements Constants {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Восстановление класса notepad в текущем фрагменте
-        if (savedInstanceState == null)
-        {
-            notepad = getArguments().getParcelable(KEY_NOTEPAD);
+        if (savedInstanceState == null) {
         } else {
-            notepad = savedInstanceState.getParcelable(KEY_NOTEPAD);
+            indexChoisedElement = savedInstanceState.getInt(KEY_INDES_CHOISED_ELEMENT);
         }
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         linearLayout = (LinearLayout) view;
 
         // Установка значения текстового поля
-        for (int i = 0; i <= notepad.getNumberElements(); i++) {
+//        for (int i = 0; i <= notepad.getNumberElements(); i++) {
+        int iEndNubmer = ((MainActivity) getActivity()).getCardSourceImplement().size();
+        for (int i = 0; i <= iEndNubmer; i++) {
             int sendedIndex = i;
             // Отображение названия заметки
             TextView textView_Name = new TextView(getContext());
             if (i > 0) {
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    textView_Name.setText(notepad.getDescription(i));
+                    textView_Name.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getDescription());
                 } else {
-                    textView_Name.setText(notepad.getName(i));
+                    textView_Name.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getName());
                 }
             } else {
-                textView_Name.setText(notepad.getName(i) + "\n");
+                textView_Name.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getName() + "\n");
             }
             // Форматирование текстового поля
             textView_Name.setTextSize(LIST_NAMES_SIZE);
@@ -79,21 +74,20 @@ public class ListNotesFragment extends Fragment implements Constants {
                     @Override
                     public void onClick(View v) {
                         // Добавление новой заметки
-                        notepad.add("", "");
-                        MainActivity mainActivity = (MainActivity) getActivity();
-                        mainActivity.setNotepad(notepad);
+                        ((MainActivity) getActivity()).getCardSourceImplement().addCardNote();
+
                         // Перезапуск фрагмента со списком для отображения новой заметки
                         requireActivity()
                                 .getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.list_container, ListNotesFragment.newInstance(notepad))
+                                .replace(R.id.list_container, ListNotesFragment.newInstance())
                                 .commit();
                         // Загрузка фрагмента c текстом TextFragment
                         indexChoisedElement = 1;
                         requireActivity()
                                 .getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.text_container, TextFragment.newInstance(notepad, indexChoisedElement, true))
+                                .replace(R.id.text_container, TextFragment.newInstance(indexChoisedElement, true))
                                 .commit();
                     }
                 });
@@ -106,7 +100,7 @@ public class ListNotesFragment extends Fragment implements Constants {
                         requireActivity()
                                 .getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.text_container, TextFragment.newInstance(notepad, sendedIndex, false))
+                                .replace(R.id.text_container, TextFragment.newInstance(indexChoisedElement, false))
                                 .commit();
                     }
                 });
@@ -115,7 +109,7 @@ public class ListNotesFragment extends Fragment implements Constants {
             // Отображение даты заметки
             TextView textView_Date = new TextView(getContext());
             if (i > 0) {
-                textView_Date.setText(notepad.getDate(i));
+                textView_Date.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getDate());
                 // Форматирование текстового поля
                 textView_Date.setTextSize(LIST_DATES_SIZE);
                 linearLayout.addView(textView_Date);
@@ -144,10 +138,8 @@ public class ListNotesFragment extends Fragment implements Constants {
                 newYear = year;
                 newMonth = monthOfYear + 1;
                 newDay = dayOfMonth;
-                notepad.setDateYear(sendedIndex, newYear);
-                notepad.setDateMonth(sendedIndex, newMonth);
-                notepad.setDateDay(sendedIndex, newDay);
-                textView.setText(notepad.getDate(sendedIndex));
+                ((MainActivity) getActivity()).getCardSourceImplement().setCardNote(sendedIndex, newYear, newMonth, newDay);
+                textView.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(sendedIndex).getDate());
             }
         };
         // Отображаем диалоговое окно для выбора даты
@@ -160,7 +152,6 @@ public class ListNotesFragment extends Fragment implements Constants {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(KEY_NOTEPAD, notepad);
         outState.putInt(KEY_INDES_CHOISED_ELEMENT, indexChoisedElement);
         super.onSaveInstanceState(outState);
     }

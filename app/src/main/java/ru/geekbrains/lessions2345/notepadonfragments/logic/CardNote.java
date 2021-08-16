@@ -3,8 +3,6 @@ package ru.geekbrains.lessions2345.notepadonfragments.logic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 public class CardNote implements Parcelable {
 
     // Имя заметки
@@ -27,6 +25,10 @@ public class CardNote implements Parcelable {
         this.dateYear = dateYear;
         this.dateMonth = dateMonth;
         this.dateDay = dateDay;
+    }
+
+    public String getDate() {
+        return String.format("%s.%s.%d\n", (dateDay < 10 ? "0" : "") + String.valueOf(dateDay), (dateMonth < 10 ? "0" : "") + String.valueOf(dateMonth), dateYear);
     }
 
     protected CardNote(Parcel in) {
