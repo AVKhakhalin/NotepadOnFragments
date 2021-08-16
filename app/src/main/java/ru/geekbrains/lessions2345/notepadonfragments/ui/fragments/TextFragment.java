@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
-import ru.geekbrains.lessions2345.notepadonfragments.logic.Notepad;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.domain.Notepad;
 import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 

@@ -1,4 +1,4 @@
-package ru.geekbrains.lessions2345.notepadonfragments.logic;
+package ru.geekbrains.lessions2345.notepadonfragments.logic.domain;
 
 import android.os.Parcel;
 import android.os.Parcelable;
