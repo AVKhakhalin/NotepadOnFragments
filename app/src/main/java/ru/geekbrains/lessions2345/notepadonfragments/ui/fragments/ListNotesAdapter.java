@@ -1,0 +1,100 @@
+package ru.geekbrains.lessions2345.notepadonfragments.ui.fragments;
+
+import android.content.res.Configuration;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import ru.geekbrains.lessions2345.notepadonfragments.R;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.ListNotes;
+import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
+
+public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.ViewHolder>{
+
+    private ListNotes listNotes;
+    int orientation = 1;
+
+    // Переменные для передачи событий во врагмент
+    private ListNotesFragmentOnClickListener listener_name;
+    private ListNotesFragmentOnClickListener listener_date;
+    public void setOnListNotesFragmentOnClickListener_name(ListNotesFragmentOnClickListener listener_name) {
+        this.listener_name = listener_name;
+    }
+    public void setOnListNotesFragmentOnClickListener_date(ListNotesFragmentOnClickListener listener_date) {
+        this.listener_date = listener_date;
+    }
+
+    public ListNotesAdapter(ListNotes listNotes, int orientation) {
+        this.listNotes = listNotes;
+        this.orientation = orientation;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_list_card, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (position == 0) {
+                holder.textView_name.setText(listNotes.getName(position));
+            } else {
+                holder.textView_name.setText(listNotes.getDescription(position));
+            }
+        } else {
+            holder.textView_name.setText(listNotes.getName(position));
+        }
+        holder.textView_date.setText(listNotes.getDate(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return listNotes.getSize();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView textView_name;
+        TextView textView_date;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            textView_name = itemView.findViewById(R.id.name_note_text);
+            textView_date = itemView.findViewById(R.id.date_note_text);
+
+            // Установка обработчика событий для нажатия на имя заметки
+            textView_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener_name.onClick(v, getAdapterPosition());
+                }
+            });
+
+            // Установка обработчика событий для нажатия на дату заметки
+            textView_date.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener_date.onClick(v, getAdapterPosition());
+                }
+            });
+        }
+    }
+
+    public void setListNotesName(int index, String name) {
+        listNotes.setName(index, name);
+    }
+
+    public void setListNotesDescription(int index, String description) {
+        listNotes.setDescription(index, description);
+    }
+
+    public void setListNotesDate(int index, String date) {
+        listNotes.setDate(index, date);
+    }
+}

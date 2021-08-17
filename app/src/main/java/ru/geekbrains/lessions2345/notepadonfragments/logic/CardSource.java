@@ -5,6 +5,8 @@ public interface CardSource {
 
     CardNote getCardNote(int position);
 
+    ListNotes getListNotes();
+
     void addCardNote();
 
     void addCardNote(CardNote cardNote);

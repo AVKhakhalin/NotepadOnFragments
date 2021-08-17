@@ -28,7 +28,7 @@ public class CardNote implements Parcelable {
     }
 
     public String getDate() {
-        return String.format("%s.%s.%d\n", (dateDay < 10 ? "0" : "") + String.valueOf(dateDay), (dateMonth < 10 ? "0" : "") + String.valueOf(dateMonth), dateYear);
+        return String.format("%s.%s.%d", (dateDay < 10 ? "0" : "") + String.valueOf(dateDay), (dateMonth < 10 ? "0" : "") + String.valueOf(dateMonth), dateYear);
     }
 
     protected CardNote(Parcel in) {

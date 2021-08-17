@@ -1,17 +1,17 @@
 package ru.geekbrains.lessions2345.notepadonfragments.ui.fragments;
 
 import android.app.DatePickerDialog;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Calendar;
 
@@ -19,7 +19,7 @@ import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class ListNotesFragment extends Fragment implements Constants {
+public class ListNotesFragment extends Fragment implements Constants, ListNotesFragmentOnClickListener {
 
     private int newYear;
     private int newMonth;
@@ -28,7 +28,6 @@ public class ListNotesFragment extends Fragment implements Constants {
     private Calendar calendar = Calendar.getInstance();
     private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
     private int indexChoisedElement = 1;
-//    private LinearLayout linearLayout = null;
     private CardView cardView = null;
 
     public static ListNotesFragment newInstance() {
@@ -43,98 +42,67 @@ public class ListNotesFragment extends Fragment implements Constants {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Восстановление класса notepad в текущем фрагменте
-        if (savedInstanceState == null) {
-        } else {
+        // Восстановление индекса выбранного элемента
+        if (savedInstanceState != null) {
             indexChoisedElement = savedInstanceState.getInt(KEY_INDES_CHOISED_ELEMENT);
         }
 
-//        View view = inflater.inflate(R.layout.fragment_list, container, false);
-        View view = inflater.inflate(R.layout.fragment_list_card, container, false);
-//        linearLayout = (LinearLayout) view;
-        cardView = (CardView) view;
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_list_container);
+        recyclerView.setHasFixedSize(true);
 
-        // Установка значения текстового поля
-//        for (int i = 0; i <= notepad.getNumberElements(); i++) {
-        int iEndNubmer = ((MainActivity) getActivity()).getCardSourceImplement().size();
-        for (int i = 0; i <= iEndNubmer; i++) {
-            int sendedIndex = i;
-            // Отображение названия заметки
-            TextView textView_Name = new TextView(getContext());
-            if (i > 0) {
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    textView_Name.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getDescription());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        ListNotesAdapter listNotesAdapter = new ListNotesAdapter(((MainActivity) getActivity()).getCardSourceImplement().getListNotes(), getResources().getConfiguration().orientation);
+
+        // Вешаем обработчики событий при нажатии на имя заметки
+        listNotesAdapter.setOnListNotesFragmentOnClickListener_name(new ListNotesFragmentOnClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                if (position == 0) {
+                    ((MainActivity) getActivity()).getCardSourceImplement().addCardNote();
+
+                    // Перезапуск фрагмента со списком для отображения новой заметки
+                    requireActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.list_container, ListNotesFragment.newInstance())
+                            .commit();
+                    // Загрузка фрагмента c текстом TextFragment
+                    indexChoisedElement = 1;
+                    requireActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.text_container, TextFragment.newInstance(indexChoisedElement, true))
+                            .commit();
                 } else {
-                    textView_Name.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getName());
+                    // Загрузка фрагмента c текстом TextFragment
+                    requireActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.text_container, TextFragment.newInstance(position, false))
+                            .commit();
                 }
-            } else {
-                textView_Name.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getName() + "\n");
             }
-            // Форматирование текстового поля
-            textView_Name.setTextSize(LIST_NAMES_SIZE);
-//            linearLayout.addView(textView_Name);
-            cardView.addView(textView_Name);
-            if (i == 0) {
-                textView_Name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Добавление новой заметки
-                        ((MainActivity) getActivity()).getCardSourceImplement().addCardNote();
+        });
 
-                        // Перезапуск фрагмента со списком для отображения новой заметки
-                        requireActivity()
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.list_container, ListNotesFragment.newInstance())
-                                .commit();
-                        // Загрузка фрагмента c текстом TextFragment
-                        indexChoisedElement = 1;
-                        requireActivity()
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.text_container, TextFragment.newInstance(indexChoisedElement, true))
-                                .commit();
-                    }
-                });
-            } else {
-                textView_Name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        indexChoisedElement = sendedIndex;
-                        // Загрузка фрагмента c текстом TextFragment
-                        requireActivity()
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.text_container, TextFragment.newInstance(indexChoisedElement, false))
-                                .commit();
-                    }
-                });
+        // Вешаем обработчики событий при нажатии на дату заметки
+        listNotesAdapter.setOnListNotesFragmentOnClickListener_date(new ListNotesFragmentOnClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                // Показать DatePicker для изменения даты заметки
+                showDatePicker(position, ((MainActivity) getActivity()), listNotesAdapter);
             }
+        });
 
-            // Отображение даты заметки
-            TextView textView_Date = new TextView(getContext());
-            if (i > 0) {
-                textView_Date.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getDate());
-                // Форматирование текстового поля
-                textView_Date.setTextSize(LIST_DATES_SIZE);
-//                linearLayout.addView(textView_Date);
-                cardView.addView(textView_Date);
-                textView_Date.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Показать DatePicker для изменения даты заметки
-                        showDatePicker(sendedIndex, textView_Date);
-                    }
-                });
-            } else {
-                textView_Date.setText("\n");
-            }
-        }
+        recyclerView.setAdapter(listNotesAdapter);
+
         return view;
     }
 
     // Показать DatePicker
-    private void showDatePicker(int sendedIndex, TextView textView) {
+    private void showDatePicker(int sendedIndex, MainActivity mainActivity, ListNotesAdapter listNotesAdapter) {
         // Устанавливаем новую дату
         DatePickerDialog.OnDateSetListener datePickerDialog = new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -144,8 +112,9 @@ public class ListNotesFragment extends Fragment implements Constants {
                 newYear = year;
                 newMonth = monthOfYear + 1;
                 newDay = dayOfMonth;
-                ((MainActivity) getActivity()).getCardSourceImplement().setCardNote(sendedIndex, newYear, newMonth, newDay);
-                textView.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(sendedIndex).getDate());
+                mainActivity.getCardSourceImplement().setCardNote(sendedIndex, newYear, newMonth, newDay);
+                listNotesAdapter.setListNotesDate(sendedIndex, ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(sendedIndex).getDate());
+                listNotesAdapter.notifyItemChanged(sendedIndex);
             }
         };
         // Отображаем диалоговое окно для выбора даты
@@ -160,5 +129,10 @@ public class ListNotesFragment extends Fragment implements Constants {
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(KEY_INDES_CHOISED_ELEMENT, indexChoisedElement);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onClick(View view, int position) {
+        Toast.makeText(getContext(), "Нажатие на элемент " + position, Toast.LENGTH_SHORT).show();
     }
 }

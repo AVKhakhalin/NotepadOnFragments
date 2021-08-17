@@ -43,7 +43,8 @@ public class Notepad implements Parcelable {
         name = new ArrayList<String>();
         name.add(NAME_EMPTY_NOTE);
         description = new ArrayList<String>();
-        description.add("");
+//        description.add("");
+        description.add(NAME_EMPTY_NOTE);
         text = new ArrayList<String>();
         text.add("");
         dateYear = new int[START_SIZE_INTARRAYS];
@@ -238,7 +239,7 @@ public class Notepad implements Parcelable {
     // Получить дату заметки
     public String getDate(int index) {
         if ((index > 0) && (index <= getNumberElements())) {
-            return String.format("%s.%s.%d\n", (dateDay[index] < 10 ? "0" : "") + String.valueOf(dateDay[index]), (dateMonth[index] < 10 ? "0" : "") + String.valueOf(dateMonth[index]), dateYear[index]);
+            return String.format("%s.%s.%d", (dateDay[index] < 10 ? "0" : "") + String.valueOf(dateDay[index]), (dateMonth[index] < 10 ? "0" : "") + String.valueOf(dateMonth[index]), dateYear[index]);
         } else {
             return "";
         }

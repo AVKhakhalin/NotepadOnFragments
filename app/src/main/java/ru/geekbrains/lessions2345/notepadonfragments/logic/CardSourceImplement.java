@@ -79,6 +79,20 @@ public class CardSourceImplement implements Constants, CardSource, Parcelable {
         return new CardNote(notepad.getName(position), notepad.getDescription(position), notepad.getText(position), notepad.getDateYear(position), notepad.getDateMonth(position), notepad.getDateDay(position));
     }
 
+    @Override
+    public ListNotes getListNotes() {
+        int numberElements = notepad.getNumberElements() + 1;
+        String[] name = new String[numberElements];
+        String[] description = new String[numberElements];
+        String[] dates = new String[numberElements];
+        for (int i = 0; i <= notepad.getNumberElements(); i++) {
+            name[i] = notepad.getName(i);
+            description[i] = notepad.getDescription(i);
+            dates[i] = notepad.getDate(i);
+        }
+        return new ListNotes(name, description, dates);
+    }
+
     // Метод добавления карты с заметкой
     @Override
     public void addCardNote(CardNote cardNote) {
