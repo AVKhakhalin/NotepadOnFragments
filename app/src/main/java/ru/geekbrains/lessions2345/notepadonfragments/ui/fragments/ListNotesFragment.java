@@ -10,6 +10,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import java.util.Calendar;
@@ -27,7 +28,8 @@ public class ListNotesFragment extends Fragment implements Constants {
     private Calendar calendar = Calendar.getInstance();
     private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
     private int indexChoisedElement = 1;
-    private LinearLayout linearLayout = null;
+//    private LinearLayout linearLayout = null;
+    private CardView cardView = null;
 
     public static ListNotesFragment newInstance() {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
@@ -47,8 +49,10 @@ public class ListNotesFragment extends Fragment implements Constants {
             indexChoisedElement = savedInstanceState.getInt(KEY_INDES_CHOISED_ELEMENT);
         }
 
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
-        linearLayout = (LinearLayout) view;
+//        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list_card, container, false);
+//        linearLayout = (LinearLayout) view;
+        cardView = (CardView) view;
 
         // Установка значения текстового поля
 //        for (int i = 0; i <= notepad.getNumberElements(); i++) {
@@ -68,7 +72,8 @@ public class ListNotesFragment extends Fragment implements Constants {
             }
             // Форматирование текстового поля
             textView_Name.setTextSize(LIST_NAMES_SIZE);
-            linearLayout.addView(textView_Name);
+//            linearLayout.addView(textView_Name);
+            cardView.addView(textView_Name);
             if (i == 0) {
                 textView_Name.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -112,7 +117,8 @@ public class ListNotesFragment extends Fragment implements Constants {
                 textView_Date.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(i).getDate());
                 // Форматирование текстового поля
                 textView_Date.setTextSize(LIST_DATES_SIZE);
-                linearLayout.addView(textView_Date);
+//                linearLayout.addView(textView_Date);
+                cardView.addView(textView_Date);
                 textView_Date.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
