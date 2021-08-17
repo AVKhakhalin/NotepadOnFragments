@@ -47,7 +47,15 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
             indexChoisedElement = savedInstanceState.getInt(KEY_INDES_CHOISED_ELEMENT);
         }
 
+        // Установка списка заметок к отображению и реагированию на события
         View view = inflater.inflate(R.layout.fragment_list, container, false);
+        listNotesSetup(view);
+
+        return view;
+    }
+
+    // Метод для установки списка заметок к отображению и реагированию на события
+    private void listNotesSetup(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_list_container);
         recyclerView.setHasFixedSize(true);
 
@@ -97,8 +105,6 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
         });
 
         recyclerView.setAdapter(listNotesAdapter);
-
-        return view;
     }
 
     // Показать DatePicker
@@ -125,14 +131,15 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
                 .show();
     }
 
+    // Сохранение промежуточного состояния при повороте экрана
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(KEY_INDES_CHOISED_ELEMENT, indexChoisedElement);
         super.onSaveInstanceState(outState);
     }
 
+    // Унаследованный метод от интерфейса ListNotesFragmentOnClickListener. Должен быть, но здесь не используется
     @Override
     public void onClick(View view, int position) {
-        Toast.makeText(getContext(), "Нажатие на элемент " + position, Toast.LENGTH_SHORT).show();
     }
 }
