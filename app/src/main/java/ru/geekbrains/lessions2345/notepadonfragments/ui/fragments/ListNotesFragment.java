@@ -81,12 +81,22 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
 
                     // Загрузка фрагмента c текстом TextFragment
                     indexChoisedElement = 1;
+                    ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(1);
                     requireActivity()
                             .getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.text_container, TextFragment.newInstance(indexChoisedElement, true))
                             .commit();
                 } else {
+                    ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(position);
+/*
+                    ((MainActivity) getActivity()).getCardSourceImplement().setActiveTextFragment(new Fragment(requireActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.text_container, TextFragment.newInstance(position, false))
+                            .commit()
+                    ));
+*/
                     // Загрузка фрагмента c текстом TextFragment
                     requireActivity()
                             .getSupportFragmentManager()

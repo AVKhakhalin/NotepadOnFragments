@@ -3,6 +3,8 @@ package ru.geekbrains.lessions2345.notepadonfragments.logic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.fragment.app.Fragment;
+
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -13,6 +15,16 @@ public class CardSourceImplement implements Constants, CardSource, Parcelable {
     private DATA_SETTINGS typeSourceData;
     private int typeSourceData_int;
     private Notepad notepad = new Notepad();
+    private int activeNoteIndex = 0;
+    private boolean deleteMode = false;
+
+    public int getActiveNoteIndex() {
+        return activeNoteIndex;
+    }
+
+    public void setActiveNoteIndex(int activeNoteIndes) {
+        this.activeNoteIndex = activeNoteIndes;
+    }
 
     public CardSourceImplement(DATA_SETTINGS typeSourceData) {
         this.typeSourceData = typeSourceData;
@@ -147,33 +159,46 @@ public class CardSourceImplement implements Constants, CardSource, Parcelable {
     // Метод установки значений в карте с заметкой
     @Override
     public void setCardNote(int position, CardNote cardNote) {
-        notepad.setName(position, cardNote.getName());
-        notepad.setDescription(position, cardNote.getDescription());
-        notepad.setText(position, cardNote.getText());
-        notepad.setDateYear(position, cardNote.getDateYear());
-        notepad.setDateMonth(position, cardNote.getDateMonth());
-        notepad.setDateDay(position, cardNote.getDateDay());
+        if (!deleteMode) {
+            notepad.setName(position, cardNote.getName());
+            notepad.setDescription(position, cardNote.getDescription());
+            notepad.setText(position, cardNote.getText());
+            notepad.setDateYear(position, cardNote.getDateYear());
+            notepad.setDateMonth(position, cardNote.getDateMonth());
+            notepad.setDateDay(position, cardNote.getDateDay());
+        }
     }
 
     // Метод установки названия и описания заметки
     @Override
     public void setCardNote(int position, String name, String description) {
-        notepad.setName(position, name);
-        notepad.setDescription(position, description);
+        if (!deleteMode) {
+            notepad.setName(position, name);
+            notepad.setDescription(position, description);
+        }
     }
 
     // Метод установки текста в карте с заметкой
     @Override
     public void setCardNote(int position, String text) {
-        notepad.setText(position, text);
+        if (!deleteMode) {
+            notepad.setText(position, text);
+        }
     }
 
     // Метод установки даты в карте с заметкой
     @Override
     public void setCardNote(int position, int year, int month, int day) {
-        notepad.setDateYear(position, year);
-        notepad.setDateMonth(position, month);
-        notepad.setDateDay(position, day);
+        if (!deleteMode) {
+            notepad.setDateYear(position, year);
+            notepad.setDateMonth(position, month);
+            notepad.setDateDay(position, day);
+        }
+    }
+
+    // Установка режима блокировки записи данных во время удаления заметки
+    public void setDeleteMode(boolean deleteMode) {
+        this.deleteMode = deleteMode;
     }
 
     // Инициализация класса Notepad для тестовой работы с заметками
@@ -201,6 +226,25 @@ public class CardSourceImplement implements Constants, CardSource, Parcelable {
                 break;
         }
     }
+
+    // Удаление карточки
+    @Override
+    public void removeCardNote(int position) {
+        switch (typeSourceData) {
+            case TEST_DATA:
+                notepad.remove(position);
+                break;
+            case FILE_DATA:
+                break;
+            case FIREBASE_DATA:
+                break;
+            case DATABASE_DATA:
+                break;
+            default:
+                break;
+        }
+    }
+
 
     // Методы для парселизации объекта
     @Override

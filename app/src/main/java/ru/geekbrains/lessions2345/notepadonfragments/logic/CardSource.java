@@ -18,4 +18,6 @@ public interface CardSource {
     void setCardNote(int position, String text);
 
     void setCardNote(int position, int year, int month, int day);
+
+    void removeCardNote(int position);
 }

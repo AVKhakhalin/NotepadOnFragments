@@ -13,6 +13,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -114,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
+                // Отображение выбранных заметок
+
                 return false;
             }
 
@@ -132,16 +135,34 @@ public class MainActivity extends AppCompatActivity implements Constants {
         int itemId = item.getItemId();
 
         if (itemId == R.id.action_close) {
-            Toast.makeText(this, "Закрыть заметку", Toast.LENGTH_SHORT).show();
+            // Отображение пустого текстового поля
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.text_container, new Fragment())
+                    .commitNow();
             return true;
         } else if (itemId == R.id.action_save) {
             Toast.makeText(this, "Сохранить заметку", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.action_filter) {
-            Toast.makeText(this, "Фильтр вывода заметок", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Фильтр вывода заметок", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.action_delete) {
-            Toast.makeText(this, "Удалить заметку", Toast.LENGTH_SHORT).show();
+            cardSourceImplement.setDeleteMode(true);
+            // Отображение пустого текстового поля
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.text_container, new Fragment())
+                    .commitNow();
+            cardSourceImplement.setDeleteMode(false);
+            String deletedNoteName = "\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getName() + "\" (\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getDescription() + "\")" ;
+            cardSourceImplement.removeCardNote(cardSourceImplement.getActiveNoteIndex());
+            // Отображение фрагмента со списком заметок
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.list_container, ListNotesFragment.newInstance())
+                    .commit();
+            Toast.makeText(this, "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.action_show_card) {
             Toast.makeText(this, "Показать карточку заметки", Toast.LENGTH_SHORT).show();

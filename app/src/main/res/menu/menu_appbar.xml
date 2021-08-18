@@ -12,42 +12,42 @@
     <item
         android:id="@+id/action_close"
         android:title="@string/action_close_note_text"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/close_note"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_save"
         android:title="@string/action_save_note_text"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/save_note"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_filter"
         android:title="@string/action_filter_output_note_text"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/filter_notes"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_delete"
         android:title="@string/action_delete_note_text"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/delete_note"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_show_card"
         android:title="@string/action_show_card_note_text"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/card_note"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_send"
         android:title="@string/action_send_note_text"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/send_note"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_add_link"
         android:title="@string/action_add_link_note_text"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@drawable/add_link_note"
         app:showAsAction="never"/>
 </menu>

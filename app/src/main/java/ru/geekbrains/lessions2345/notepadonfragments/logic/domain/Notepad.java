@@ -170,9 +170,9 @@ public class Notepad implements Parcelable, Constants {
             dateMonth = new int[tempArrayYear.length];
             dateDay = new int[tempArrayYear.length];
             for (int i = 0; i < dateYear.length; i++) {
-                dateYear[i] = tempArrayYear[counter];
-                dateMonth[i] = tempArrayMonth[counter];
-                dateDay[i] = tempArrayDay[counter];
+                dateYear[i] = tempArrayYear[i];
+                dateMonth[i] = tempArrayMonth[i];
+                dateDay[i] = tempArrayDay[i];
             }
         }
     }
