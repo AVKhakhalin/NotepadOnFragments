@@ -41,4 +41,27 @@ public class ListNotes {
     public void setDate(int index, String date) {
         this.dates[index] = date;
     }
+
+    public void addNote(int index, String name, String description, String date) {
+        int newArraySize = name.length() + 1;
+        if (index < newArraySize) {
+            String[] newNames = new String[newArraySize];
+            String[] newDescriptions = new String[newArraySize];
+            String[] newDates = new String[newArraySize];
+
+            int counter = 0;
+            for (int i = 0; i < newArraySize; i++) {
+                if (counter == index) {
+                    newNames[i] = name;
+                    newDescriptions[i] = description;
+                    newDates[i] = date;
+                } else {
+                    newNames[i] = names[counter];
+                    newDescriptions[i] = descriptions[counter];
+                    newDates[i] = dates[counter];
+                    counter++;
+                }
+            }
+        }
+    }
 }

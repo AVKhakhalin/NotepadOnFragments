@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -29,6 +28,8 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
     private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
     private int indexChoisedElement = 1;
     private CardView cardView = null;
+
+    private ListNotesAdapter listNotesAdapter;
 
     public static ListNotesFragment newInstance() {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
@@ -62,7 +63,7 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        ListNotesAdapter listNotesAdapter = new ListNotesAdapter(((MainActivity) getActivity()).getCardSourceImplement().getListNotes(), getResources().getConfiguration().orientation);
+        listNotesAdapter = new ListNotesAdapter(((MainActivity) getActivity()).getCardSourceImplement().getListNotes(), getResources().getConfiguration().orientation);
 
         // Вешаем обработчики событий при нажатии на имя заметки
         listNotesAdapter.setOnListNotesFragmentOnClickListener_name(new ListNotesFragmentOnClickListener() {
@@ -77,6 +78,7 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
                             .beginTransaction()
                             .replace(R.id.list_container, ListNotesFragment.newInstance())
                             .commit();
+
                     // Загрузка фрагмента c текстом TextFragment
                     indexChoisedElement = 1;
                     requireActivity()
@@ -100,15 +102,14 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
             @Override
             public void onClick(View view, int position) {
                 // Показать DatePicker для изменения даты заметки
-                showDatePicker(position, ((MainActivity) getActivity()), listNotesAdapter);
+                showDatePicker(position, ((MainActivity) getActivity()));
             }
         });
-
         recyclerView.setAdapter(listNotesAdapter);
     }
 
     // Показать DatePicker
-    private void showDatePicker(int sendedIndex, MainActivity mainActivity, ListNotesAdapter listNotesAdapter) {
+    private void showDatePicker(int sendedIndex, MainActivity mainActivity) {
         // Устанавливаем новую дату
         DatePickerDialog.OnDateSetListener datePickerDialog = new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

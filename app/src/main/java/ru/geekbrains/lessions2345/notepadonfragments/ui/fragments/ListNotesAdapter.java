@@ -4,17 +4,15 @@ import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.ListNotes;
-import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
+import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
 
-public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.ViewHolder>{
+public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.ViewHolder> implements Constants {
 
     private ListNotes listNotes;
     int orientation = 1;
@@ -22,9 +20,11 @@ public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.View
     // Переменные для передачи событий во врагмент
     private ListNotesFragmentOnClickListener listener_name;
     private ListNotesFragmentOnClickListener listener_date;
+
     public void setOnListNotesFragmentOnClickListener_name(ListNotesFragmentOnClickListener listener_name) {
         this.listener_name = listener_name;
     }
+
     public void setOnListNotesFragmentOnClickListener_date(ListNotesFragmentOnClickListener listener_date) {
         this.listener_date = listener_date;
     }
@@ -92,6 +92,10 @@ public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.View
 
     public void setListNotesDescription(int index, String description) {
         listNotes.setDescription(index, description);
+    }
+
+    public void addListNote(int index, String name, String description, String date) {
+        listNotes.addNote(index, name, description, date);
     }
 
     public void setListNotesDate(int index, String date) {
