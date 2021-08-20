@@ -2,11 +2,16 @@ package ru.geekbrains.lessions2345.notepadonfragments.ui.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +34,8 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
     private CardView cardView = null;
 
     private ListNotesAdapter listNotesAdapter;
+
+    private EditCardFragment editCardFragment;
 
     public static ListNotesFragment newInstance() {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
@@ -62,7 +69,7 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        listNotesAdapter = new ListNotesAdapter(((MainActivity) getActivity()).getCardSourceImplement().getListNotes(), getResources().getConfiguration().orientation);
+        listNotesAdapter = new ListNotesAdapter(((MainActivity) getActivity()).getCardSourceImplement().getListNotes(), getResources().getConfiguration().orientation, this);
 
         // Вешаем обработчики событий при нажатии на имя заметки
         listNotesAdapter.setOnListNotesFragmentOnClickListener_name(new ListNotesFragmentOnClickListener() {
@@ -153,5 +160,46 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
     // Унаследованный метод от интерфейса ListNotesFragmentOnClickListener. Должен быть, но здесь не используется
     @Override
     public void onClick(View view, int position) {
+    }
+
+    // Создание контекстного меню для элементов списка
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        requireActivity().getMenuInflater().inflate(R.menu.menu_context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        int position = listNotesAdapter.getMenuContextClickPosition();
+        switch (item.getItemId()) {
+            case R.id.context_menu_action_show_card:
+                // Отображение карточки заметки
+                ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(position);
+                editCardFragment = new EditCardFragment();
+                editCardFragment.show(getActivity().getFragmentManager(), "");
+                break;
+            case R.id.context_menu_action_delete_card:
+                // Удаление заметки
+                ((MainActivity) getActivity()).getCardSourceImplement().setDeleteMode(true);
+                // Отображение пустого текстового поля
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.text_container, new Fragment())
+                        .commitNow();
+                ((MainActivity) getActivity()).getCardSourceImplement().setDeleteMode(false);
+                String deletedNoteName = "\"" + ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")" ;
+                ((MainActivity) getActivity()).getCardSourceImplement().removeCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex());
+                // Отображение фрагмента со списком заметок
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.list_container, ListNotesFragment.newInstance())
+                        .commit();
+                Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 }

@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
@@ -21,6 +23,14 @@ public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.View
     private ListNotesFragmentOnClickListener listener_name;
     private ListNotesFragmentOnClickListener listener_date;
 
+    // Переменные для контекстного меню
+    private Fragment fragment;
+    private int menuContextClickPosition = 0;
+
+    public int getMenuContextClickPosition() {
+        return menuContextClickPosition;
+    }
+
     public void setOnListNotesFragmentOnClickListener_name(ListNotesFragmentOnClickListener listener_name) {
         this.listener_name = listener_name;
     }
@@ -29,9 +39,10 @@ public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.View
         this.listener_date = listener_date;
     }
 
-    public ListNotesAdapter(ListNotes listNotes, int orientation) {
+    public ListNotesAdapter(ListNotes listNotes, int orientation, Fragment fragment) {
         this.listNotes = listNotes;
         this.orientation = orientation;
+        this.fragment = fragment;
     }
 
     @Override
@@ -68,11 +79,26 @@ public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.View
             textView_name = itemView.findViewById(R.id.name_note_text);
             textView_date = itemView.findViewById(R.id.date_note_text);
 
-            // Установка обработчика событий для нажатия на имя заметки
+            // Регистрация стартового элемента для контекстного меню
+            fragment.registerForContextMenu(textView_name);
+
+            // Установка обработчиков событий для нажатия на имя заметки
             textView_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener_name.onClick(v, getAdapterPosition());
+                }
+            });
+            textView_name.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    menuContextClickPosition = getAdapterPosition();
+                    if (menuContextClickPosition > 0) {
+                        textView_name.showContextMenu(0, 0);
+                        return false;
+                    } else {
+                        return true;
+                    }
                 }
             });
 

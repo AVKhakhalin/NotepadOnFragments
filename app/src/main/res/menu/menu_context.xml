@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/context_menu_action_show_card"
+        android:title="@string/menu_action_show_card_note_text"
+        android:icon="@drawable/card_note"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/context_menu_action_delete_card"
+        android:title="@string/action_delete_note_text"
+        android:icon="@drawable/delete_note"
+        app:showAsAction="never"/>
+</menu>

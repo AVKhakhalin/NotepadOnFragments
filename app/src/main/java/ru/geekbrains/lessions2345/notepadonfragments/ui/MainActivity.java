@@ -26,7 +26,7 @@ import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.ListNotesFragm
 public class MainActivity extends AppCompatActivity implements Constants {
 
     private DATA_SETTINGS typeSourceData = null;
-    CardSourceImplement cardSourceImplement;
+    private CardSourceImplement cardSourceImplement;
     private EditCardFragment editCardFragment;
 
     @Override
