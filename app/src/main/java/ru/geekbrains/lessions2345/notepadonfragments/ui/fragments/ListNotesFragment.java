@@ -58,6 +58,18 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         listNotesSetup(view);
 
+        // Восстановление отображения содержимого просматриваемой заметки до удаления другой заметки через контекстное меню
+        int oldActiveNoteIndexBeforDelete = ((MainActivity) getActivity()).getCardSourceImplement().getOldActiveNoteIndexBeforDelete();
+        if (oldActiveNoteIndexBeforDelete > 0) {
+            ((MainActivity) getActivity()).getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+            // Загрузка фрагмента c текстом TextFragment
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.text_container, TextFragment.newInstance(oldActiveNoteIndexBeforDelete, false))
+                    .commit();
+        }
+
         return view;
     }
 
@@ -79,11 +91,7 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
                     ((MainActivity) getActivity()).getCardSourceImplement().addCardNote();
 
                     // Перезапуск фрагмента со списком для отображения новой заметки
-                    requireActivity()
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.list_container, ListNotesFragment.newInstance())
-                            .commit();
+                    updateListNotes();
 
                     // Загрузка фрагмента c текстом TextFragment
                     indexChoisedElement = 1;
@@ -174,32 +182,64 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
         int position = listNotesAdapter.getMenuContextClickPosition();
         switch (item.getItemId()) {
             case R.id.context_menu_action_show_card:
-                // Отображение карточки заметки
+                // Отображение карточки заметки через контекстное меню
                 ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(position);
                 editCardFragment = new EditCardFragment();
                 editCardFragment.show(getActivity().getFragmentManager(), "");
                 break;
             case R.id.context_menu_action_delete_card:
-                // Удаление заметки
-                ((MainActivity) getActivity()).getCardSourceImplement().setDeleteMode(true);
-                // Отображение пустого текстового поля
-                requireActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.text_container, new Fragment())
-                        .commitNow();
-                ((MainActivity) getActivity()).getCardSourceImplement().setDeleteMode(false);
-                String deletedNoteName = "\"" + ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")" ;
-                ((MainActivity) getActivity()).getCardSourceImplement().removeCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex());
-                // Отображение фрагмента со списком заметок
-                requireActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.list_container, ListNotesFragment.newInstance())
-                        .commit();
-                Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
+                // Удаление карточки через контекстное меню
+                int oldActiveNoteIndex = ((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex();
+                if (oldActiveNoteIndex > 0) {
+                    ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(position);
+                    // Удаление заметки
+                    String deletedNoteName = "\"" + ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")";
+                    ((MainActivity) getActivity()).getCardSourceImplement().removeCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex());
+                    Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
+
+                    if (oldActiveNoteIndex != position) {
+                        if (oldActiveNoteIndex > position) {
+                            oldActiveNoteIndex--;
+                            ((MainActivity) getActivity()).getCardSourceImplement().setOldActiveNoteIndexBeforDelete(oldActiveNoteIndex);
+                        } else {
+                            ((MainActivity) getActivity()).getCardSourceImplement().setOldActiveNoteIndexBeforDelete(oldActiveNoteIndex);
+                        }
+                    } else {
+                        ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(0);
+                        ((MainActivity) getActivity()).getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+                        // Отображение пустого текстового поля
+                        ((MainActivity) getActivity()).getCardSourceImplement().setDeleteMode(true);
+                        requireActivity()
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.text_container, new Fragment())
+                                .commitNow();
+                        ((MainActivity) getActivity()).getCardSourceImplement().setDeleteMode(false);
+                    }
+                    updateListNotes();
+                } else if ((oldActiveNoteIndex == 0) && (((MainActivity) getActivity()).getCardSourceImplement().size() > 0)) {
+                    ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(position);
+                    // Удаление заметки
+                    String deletedNoteName = "\"" + ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")";
+                    ((MainActivity) getActivity()).getCardSourceImplement().removeCardNote(((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex());
+                    Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
+
+                    ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(0);
+                    ((MainActivity) getActivity()).getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+                    updateListNotes();
+                }
+
                 break;
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void updateListNotes() {
+        // Отображение фрагмента с обновлённым списком заметок
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.list_container, ListNotesFragment.newInstance())
+                .commit();
     }
 }

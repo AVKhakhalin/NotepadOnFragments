@@ -17,6 +17,15 @@ public class CardSourceImplement implements Constants, CardSource, Parcelable {
     private Notepad notepad = new Notepad();
     private int activeNoteIndex = 0;
     private boolean deleteMode = false;
+    private int oldActiveNoteIndexBeforDelete = 0;
+
+    public int getOldActiveNoteIndexBeforDelete() {
+        return oldActiveNoteIndexBeforDelete;
+    }
+
+    public void setOldActiveNoteIndexBeforDelete(int oldActiveNoteIndexBeforDelete) {
+        this.oldActiveNoteIndexBeforDelete = oldActiveNoteIndexBeforDelete;
+    }
 
     public int getActiveNoteIndex() {
         return activeNoteIndex;
