@@ -24,7 +24,6 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
     private int newMonth;
     private int newDay;
 
-    private Calendar calendar = Calendar.getInstance();
     private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
     private int indexChoisedElement = 1;
     private CardView cardView = null;
@@ -89,14 +88,7 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
                             .commit();
                 } else {
                     ((MainActivity) getActivity()).getCardSourceImplement().setActiveNoteIndex(position);
-/*
-                    ((MainActivity) getActivity()).getCardSourceImplement().setActiveTextFragment(new Fragment(requireActivity()
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.text_container, TextFragment.newInstance(position, false))
-                            .commit()
-                    ));
-*/
+
                     // Загрузка фрагмента c текстом TextFragment
                     requireActivity()
                             .getSupportFragmentManager()
@@ -121,6 +113,7 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
     // Показать DatePicker
     private void showDatePicker(int sendedIndex, MainActivity mainActivity) {
         // Устанавливаем новую дату
+        Calendar calendar = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener datePickerDialog = new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 calendar.set(Calendar.YEAR, year);
@@ -135,11 +128,19 @@ public class ListNotesFragment extends Fragment implements Constants, ListNotesF
             }
         };
         // Отображаем диалоговое окно для выбора даты
-        new DatePickerDialog(getContext(), datePickerDialog,
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH))
-                .show();
+        if (sendedIndex <= 0) {
+            new DatePickerDialog(getContext(), datePickerDialog,
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH))
+                    .show();
+        } else {
+            new DatePickerDialog(getContext(), datePickerDialog,
+                    ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(sendedIndex).getDateYear(),
+                    ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(sendedIndex).getDateMonth() - 1,
+                    ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(sendedIndex).getDateDay())
+                    .show();
+        }
     }
 
     // Сохранение промежуточного состояния при повороте экрана

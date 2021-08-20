@@ -14,7 +14,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/app_background"
+            android:background="@color/background_app_menu"
             app:title="@string/app_bar_title" />
 
     </com.google.android.material.appbar.AppBarLayout>

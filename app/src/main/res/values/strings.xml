@@ -5,10 +5,18 @@
     <string name="action_save_note_text">Сохранить заметку</string>
     <string name="action_filter_output_note_text">Фильтр вывода заметок</string>
     <string name="action_delete_note_text">Удалить заметку</string>
-    <string name="action_show_card_note_text">Посмотреть карту заметки</string>
+    <string name="action_show_card_note_text">Посмотр/создание карты заметки</string>
     <string name="action_send_note_text">Переслать заметку</string>
     <string name="action_add_link_note_text">Добавить ссылку заметке</string>
     <string name="app_bar_title"></string>
     <string name="user_name">Андрей</string>
     <string name="about_user_text">Хочу быть разработчиком <br></br> компьютерных игр</string>
+
+    <string name="message_text">Карточка заметки</string>
+    <string name="cancel">Отмена</string>
+    <string name="card_note_edit_ok">Сохранить</string>
+    <string name="card_edit_field_name_title_text">Имя:</string>
+    <string name="card_edit_field_description_title_text">Описание:</string>
+    <string name="empty_text" />
+    <string name="card_edit_field_data_title_text">Дата:</string>
 </resources>

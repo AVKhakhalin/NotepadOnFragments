@@ -20,12 +20,14 @@ import com.google.android.material.navigation.NavigationView;
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.CardSourceImplement;
 import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
+import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.EditCardFragment;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.ListNotesFragment;
 
 public class MainActivity extends AppCompatActivity implements Constants {
 
     private DATA_SETTINGS typeSourceData = null;
     CardSourceImplement cardSourceImplement;
+    private EditCardFragment editCardFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +137,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
         int itemId = item.getItemId();
 
         if (itemId == R.id.action_close) {
-            // Отображение пустого текстового поля
+            // Закрытие заметки - отображение пустого текстового поля и установка текущего индекса заметки на 0
+            cardSourceImplement.setActiveNoteIndex(0);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.text_container, new Fragment())
@@ -143,9 +146,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
             return true;
         } else if (itemId == R.id.action_save) {
             Toast.makeText(this, "Сохранить заметку", Toast.LENGTH_SHORT).show();
-            return true;
-        } else if (itemId == R.id.action_filter) {
-//            Toast.makeText(this, "Фильтр вывода заметок", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.action_delete) {
             cardSourceImplement.setDeleteMode(true);
@@ -164,8 +164,13 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     .commit();
             Toast.makeText(this, "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
             return true;
+        } else if (itemId == R.id.action_filter) {
+            Toast.makeText(this, "Фильтр вывода заметок", Toast.LENGTH_SHORT).show();
+            return true;
         } else if (itemId == R.id.action_show_card) {
-            Toast.makeText(this, "Показать карточку заметки", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Посмотр/создание карты заметки", Toast.LENGTH_SHORT).show();
+            editCardFragment = new EditCardFragment();
+            editCardFragment.show(getFragmentManager(), "");
             return true;
         } else if (itemId == R.id.action_send) {
             Toast.makeText(this, "Переслать заметку", Toast.LENGTH_SHORT).show();

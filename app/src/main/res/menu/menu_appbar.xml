@@ -22,15 +22,15 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_filter"
-        android:title="@string/action_filter_output_note_text"
-        android:icon="@drawable/filter_notes"
-        app:showAsAction="never"/>
-
-    <item
         android:id="@+id/action_delete"
         android:title="@string/action_delete_note_text"
         android:icon="@drawable/delete_note"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_filter"
+        android:title="@string/action_filter_output_note_text"
+        android:icon="@drawable/filter_notes"
         app:showAsAction="never"/>
 
     <item
