@@ -28,7 +28,6 @@ public class ListNotesFragment extends Fragment {
     private Calendar calendar = Calendar.getInstance();
     private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
     private int indexChoisedElement = 0;
-    private LinearLayout linearLayout = null;
 
     public static ListNotesFragment newInstance(Notepad notepad) {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
@@ -51,83 +50,96 @@ public class ListNotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-        linearLayout = (LinearLayout) view;
-
+        LinearLayout linearLayout = (LinearLayout) view;
         // Установка значения текстового поля
-        for (int i = 0; i <= notepad.getNumberElements(); i++) {
-            int sendedIndex = i;
-            // Отображение названия заметки
-            TextView textView_Name = new TextView(getContext());
-            if (i > 0) {
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    textView_Name.setText(notepad.getDescription(i));
-                } else {
-                    textView_Name.setText(notepad.getName(i));
-                }
-            } else {
-                textView_Name.setText(notepad.getName(i) + "\n");
-            }
-            // Форматирование текстового поля
-            textView_Name.setTextSize(MainActivity.LIST_NAMES_SIZE);
-            linearLayout.addView(textView_Name);
-            if (i == 0) {
-                textView_Name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Добавление новой заметки
-                        notepad.add("", "");
-                        MainActivity mainActivity = (MainActivity) getActivity();
-                        mainActivity.setNotepad(notepad);
-                        // Перезапуск фрагмента со списком для отображения новой заметки
-                        requireActivity()
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.list_container, ListNotesFragment.newInstance(notepad))
-                                .commit();
-                        // Загрузка фрагмента c текстом TextFragment
-                        indexChoisedElement = 1;
-                        requireActivity()
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.text_container, TextFragment.newInstance(notepad, indexChoisedElement, true))
-                                .commit();
-                    }
-                });
-            } else {
-                textView_Name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        indexChoisedElement = sendedIndex;
-                        // Загрузка фрагмента c текстом TextFragment
-                        requireActivity()
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.text_container, TextFragment.newInstance(notepad, sendedIndex, false))
-                                .commit();
-                    }
-                });
-            }
-
-            // Отображение даты заметки
-            TextView textView_Date = new TextView(getContext());
-            if (i > 0) {
-                textView_Date.setText(notepad.getDate(i));
-                // Форматирование текстового поля
-                textView_Date.setTextSize(MainActivity.LIST_DATES_SIZE);
-                linearLayout.addView(textView_Date);
-                textView_Date.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Показать DatePicker для изменения даты заметки
-                        showDatePicker(sendedIndex, textView_Date);
-                    }
-                });
-            } else {
-                textView_Date.setText("\n");
-            }
-        }
+        createList(linearLayout);
         return view;
     }
+
+    private void createList(LinearLayout linearLayout) {
+        for (int i = 0; i <= notepad.getNumberElements(); i++) {
+            // Отображение названия заметки
+            linearLayout.addView(createNameTextView(i));
+            if (i > 0) {
+                linearLayout.addView(createDateTextView(i));
+            }
+        }
+    }
+
+    private View createNameTextView(int sendingIndex) {
+        TextView textView_Name = new TextView(getContext());
+        // Форматирование текстового поля
+        textView_Name.setTextSize(MainActivity.LIST_NAMES_SIZE);
+        if (sendingIndex == 0) {
+            textView_Name.setText(String.format("%s\n", notepad.getName(sendingIndex)));
+            textView_Name.setOnClickListener(newNoteClickListener);
+        } else {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                textView_Name.setText(notepad.getDescription(sendingIndex));
+            } else {
+                textView_Name.setText(notepad.getName(sendingIndex));
+            }
+            textView_Name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    indexChoisedElement = sendingIndex;
+                    // Загрузка фрагмента c текстом TextFragment
+                    showTextFragment(sendingIndex, false);
+                }
+            });
+        }
+        return textView_Name;
+    }
+
+    private View createDateTextView(int sendingIndex) {
+        // Отображение даты заметки
+        TextView textView_Date = new TextView(getContext());
+        // Форматирование текстового поля
+        textView_Date.setTextSize(MainActivity.LIST_DATES_SIZE);
+        textView_Date.setText(String.format("%s\n", notepad.getDate(sendingIndex)));
+
+
+        textView_Date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Показать DatePicker для изменения даты заметки
+                showDatePicker(sendingIndex, textView_Date);
+            }
+        });
+        return textView_Date;
+    }
+
+    private void showTextFragment(int sendingIndex, boolean b) {
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.text_container, TextFragment.newInstance(notepad, sendingIndex, b))
+                .commit();
+    }
+
+    private void showTextListNotesFragment() {
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.list_container, ListNotesFragment.newInstance(notepad))
+                .commit();
+    }
+
+    private View.OnClickListener newNoteClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // Добавление новой заметки
+            notepad.add("", "");
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setNotepad(notepad);
+            // Перезапуск фрагмента со списком для отображения новой заметки
+            showTextListNotesFragment();
+            // Загрузка фрагмента c текстом TextFragment
+            indexChoisedElement = 1;
+            showTextFragment(indexChoisedElement, true);
+        }
+    };
+
 
     // Показать DatePicker
     private void showDatePicker(int sendedIndex, TextView textView) {
