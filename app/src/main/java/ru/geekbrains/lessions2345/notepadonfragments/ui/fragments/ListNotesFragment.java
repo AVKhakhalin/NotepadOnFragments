@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Calendar;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
-import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
 public class ListNotesFragment extends Fragment implements ListNotesFragmentOnClickListener {
@@ -31,10 +30,9 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
 
     private final String KEY_INDES_CHOISED_ELEMENT = "ChoisedElement";
     private int indexChoisedElement = 1;
-    private CardView cardView = null;
+//    private CardView cardView = null;
 
     private ListNotesAdapter listNotesAdapter;
-
     private EditCardFragment editCardFragment;
 
     public static ListNotesFragment newInstance() {
@@ -57,18 +55,6 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
         // Установка списка заметок к отображению и реагированию на события
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         listNotesSetup(view);
-
-        // Восстановление отображения содержимого просматриваемой заметки до удаления другой заметки через контекстное меню
-        int oldActiveNoteIndexBeforDelete = ((MainActivity) getActivity()).getCardSourceImplement().getOldActiveNoteIndexBeforDelete();
-        if (oldActiveNoteIndexBeforDelete > 0) {
-            ((MainActivity) getActivity()).getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
-            // Загрузка фрагмента c текстом TextFragment
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.text_container, TextFragment.newInstance(oldActiveNoteIndexBeforDelete, false))
-                    .commit();
-        }
 
         return view;
     }
@@ -123,6 +109,18 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
             }
         });
         recyclerView.setAdapter(listNotesAdapter);
+
+        // Восстановление отображения содержимого просматриваемой заметки до удаления другой заметки через контекстное меню
+        int oldActiveNoteIndexBeforDelete = ((MainActivity) getActivity()).getCardSourceImplement().getOldActiveNoteIndexBeforDelete();
+        if (oldActiveNoteIndexBeforDelete > 0) {
+            ((MainActivity) getActivity()).getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+            // Загрузка фрагмента c текстом TextFragment
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.text_container, TextFragment.newInstance(oldActiveNoteIndexBeforDelete, false))
+                    .commit();
+        }
     }
 
     // Показать DatePicker
