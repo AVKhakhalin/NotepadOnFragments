@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -36,24 +37,25 @@ public class TextFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        MainActivity mainActivity = ((MainActivity) getActivity());
         // Восстановление notepad и index
         if (savedInstanceState == null) {
             index = getArguments().getInt(CONSTANTS.KEY_INDEX);
             isCreatedNewNote = getArguments().getBoolean(CONSTANTS.KEY_CREATED_NEW_NOTE);
             if (isCreatedNewNote == true) {
-                ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(1).setText("");
+                mainActivity.getCardSourceImplement().getCardNote(1).setText("");
             }
         } else {
             index = savedInstanceState.getInt(CONSTANTS.KEY_INDEX);
             isCreatedNewNote = false;
         }
-        numberPreviousElementsInNotepad = ((MainActivity) getActivity()).getCardSourceImplement().size();
+        numberPreviousElementsInNotepad = mainActivity.getCardSourceImplement().size();
 
         // Установка значения текстового поля
         View view = inflater.inflate(R.layout.fragment_text, container, false);
         LinearLayout linearLayout = (LinearLayout) view;
         editText = new EditText(getContext());
-        editText.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(index).getText());
+        editText.setText(mainActivity.getCardSourceImplement().getCardNote(index).getText());
         // Форматирование текстового поля
         editText.setTextSize(20);
         linearLayout.addView(editText);
@@ -62,21 +64,28 @@ public class TextFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (numberPreviousElementsInNotepad != ((MainActivity) getActivity()).getCardSourceImplement().size()) {
+        MainActivity mainActivity = ((MainActivity) getActivity());
+        if (numberPreviousElementsInNotepad != mainActivity.getCardSourceImplement().size()) {
             index++;
             isCreatedNewNote = false;
         }
-        ((MainActivity) getActivity()).getCardSourceImplement().setCardNote(index, String.valueOf(editText.getText()));
+        mainActivity.getCardSourceImplement().setCardNote(index, String.valueOf(editText.getText()));
         outState.putInt(CONSTANTS.KEY_INDEX, index);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onStop() {
-        if (numberPreviousElementsInNotepad == ((MainActivity) getActivity()).getCardSourceImplement().size()) {
-            ((MainActivity) getActivity()).getCardSourceImplement().setCardNote(index, String.valueOf(editText.getText()));
-        } else {
-            ((MainActivity) getActivity()).getCardSourceImplement().setCardNote(index + 1, String.valueOf(editText.getText()));
+        MainActivity mainActivity = ((MainActivity) getActivity());
+        if (numberPreviousElementsInNotepad == mainActivity.getCardSourceImplement().size()) {
+            // Случай редактирования элемента
+            mainActivity.getCardSourceImplement().setCardNote(index, String.valueOf(editText.getText()));
+        } else if (numberPreviousElementsInNotepad < mainActivity.getCardSourceImplement().size()) {
+            // Случай добавления элемента
+            mainActivity.getCardSourceImplement().setCardNote(index + 1, String.valueOf(editText.getText()));
+        } else if (numberPreviousElementsInNotepad > mainActivity.getCardSourceImplement().size()) {
+            // Случай удаления элемента
+            mainActivity.getCardSourceImplement().setCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex(), String.valueOf(editText.getText()));
         }
         super.onStop();
     }

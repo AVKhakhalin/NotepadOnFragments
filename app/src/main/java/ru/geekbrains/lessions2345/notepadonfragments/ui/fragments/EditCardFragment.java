@@ -32,37 +32,17 @@ public class EditCardFragment extends DialogFragment implements OnClickListener 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_card, null);
-        initView(view);
+        MainActivity mainActivity = ((MainActivity) getActivity());
+        initView(view, mainActivity);
         return view;
-    }
-
-    private void onCancel(View view) {
-        dismiss();
-    }
-
-    public void onOk(View v) {
-        if (activeIndex <= 0) {
-            ((MainActivity) getActivity()).getCardSourceImplement().addCardNote(new CardNote(String.valueOf(editText_name.getText()), String.valueOf(editText_description.getText()), "", this.datePicker.getYear(), this.datePicker.getMonth() + 1, this.datePicker.getDayOfMonth()));
-        } else {
-            ((MainActivity) getActivity()).getCardSourceImplement().setCardNote(activeIndex, String.valueOf(editText_name.getText()), String.valueOf(editText_description.getText()));
-            ((MainActivity) getActivity()).getCardSourceImplement().setCardNote(activeIndex, this.datePicker.getYear(), this.datePicker.getMonth() + 1, this.datePicker.getDayOfMonth());
-        }
-        // Перезапуск фрагмента со списком для отображения новой заметки
-        ((MainActivity) getActivity())
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.list_container, ListNotesFragment.newInstance())
-                .commit();
-        dismiss();
     }
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
     }
 
-    private void initView(View view) {
-        activeIndex = ((MainActivity) getActivity()).getCardSourceImplement().getActiveNoteIndex();
-
+    private void initView(View view, MainActivity mainActivity) {
+        activeIndex = mainActivity.getCardSourceImplement().getActiveNoteIndex();
         textView_title = view.findViewById(R.id.card_note_title);
         editText_name = view.findViewById(R.id.card_name_note_text);
         editText_description = view.findViewById(R.id.card_description_note_text);
@@ -76,8 +56,8 @@ public class EditCardFragment extends DialogFragment implements OnClickListener 
             editText_name.setText(CONSTANTS.NAME_EMPTY_NOTE);
             editText_description.setText(CONSTANTS.DESCRIPTION_EMPTY_NOTE);
         } else {
-            editText_name.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(activeIndex).getName());
-            editText_description.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(activeIndex).getDescription());
+            editText_name.setText(mainActivity.getCardSourceImplement().getCardNote(activeIndex).getName());
+            editText_description.setText(mainActivity.getCardSourceImplement().getCardNote(activeIndex).getDescription());
         }
         view.findViewById(R.id.button_cancel).setOnClickListener(this::onCancel);
         int year;
@@ -88,11 +68,33 @@ public class EditCardFragment extends DialogFragment implements OnClickListener 
             month = calendar.get(Calendar.MONTH);
             day = calendar.get(Calendar.DAY_OF_MONTH);
         } else {
-            year = ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(activeIndex).getDateYear();
-            month = ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(activeIndex).getDateMonth() - 1;
-            day = ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(activeIndex).getDateDay();
+            year = mainActivity.getCardSourceImplement().getCardNote(activeIndex).getDateYear();
+            month = mainActivity.getCardSourceImplement().getCardNote(activeIndex).getDateMonth() - 1;
+            day = mainActivity.getCardSourceImplement().getCardNote(activeIndex).getDateDay();
         }
-//        datePicker.updateDate(year, month, day);
         datePicker.init(year, month, day, null);
+    }
+
+    // Результат нажатия на кнопку отмены действия
+    private void onCancel(View view) {
+        dismiss();
+    }
+
+    // Результат нажатия на кнопку подтверждения действия
+    public void onOk(View v) {
+        MainActivity mainActivity = ((MainActivity) getActivity());
+        if (activeIndex <= 0) {
+            mainActivity.getCardSourceImplement().addCardNote(new CardNote(String.valueOf(editText_name.getText()), String.valueOf(editText_description.getText()), "", this.datePicker.getYear(), this.datePicker.getMonth() + 1, this.datePicker.getDayOfMonth()));
+        } else {
+            mainActivity.getCardSourceImplement().setCardNote(activeIndex, String.valueOf(editText_name.getText()), String.valueOf(editText_description.getText()));
+            mainActivity.getCardSourceImplement().setCardNote(activeIndex, this.datePicker.getYear(), this.datePicker.getMonth() + 1, this.datePicker.getDayOfMonth());
+        }
+        // Перезапуск фрагмента со списком для отображения новой заметки
+        mainActivity
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.list_container, ListNotesFragment.newInstance())
+                .commit();
+        dismiss();
     }
 }
