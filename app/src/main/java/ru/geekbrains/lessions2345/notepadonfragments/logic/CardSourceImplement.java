@@ -3,16 +3,14 @@ package ru.geekbrains.lessions2345.notepadonfragments.logic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.fragment.app.Fragment;
-
 import java.util.Calendar;
 import java.util.TimeZone;
 
 import ru.geekbrains.lessions2345.notepadonfragments.logic.domain.Notepad;
-import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
+import ru.geekbrains.lessions2345.notepadonfragments.model.TYPES_DATA;
 
-public class CardSourceImplement implements Constants, CardSource, Parcelable {
-    private DATA_SETTINGS typeSourceData;
+public class CardSourceImplement implements CardSource, Parcelable {
+    private TYPES_DATA typeSourceData;
     private int typeSourceData_int;
     private Notepad notepad = new Notepad();
     private int activeNoteIndex = 0;
@@ -35,13 +33,13 @@ public class CardSourceImplement implements Constants, CardSource, Parcelable {
         this.activeNoteIndex = activeNoteIndes;
     }
 
-    public CardSourceImplement(DATA_SETTINGS typeSourceData) {
+    public CardSourceImplement(TYPES_DATA typeSourceData) {
         this.typeSourceData = typeSourceData;
         setTypeSourceData_Int(typeSourceData);
         initNotepad();
     }
 
-    private void setTypeSourceData_Int(DATA_SETTINGS typeSourceData) {
+    private void setTypeSourceData_Int(TYPES_DATA typeSourceData) {
         switch (typeSourceData) {
             case TEST_DATA:
                 typeSourceData_int = 0;
@@ -62,16 +60,16 @@ public class CardSourceImplement implements Constants, CardSource, Parcelable {
     private void setTypeSourceData(int typeSourceData_int) {
         switch (typeSourceData_int) {
             case 0:
-                typeSourceData = DATA_SETTINGS.TEST_DATA;
+                typeSourceData = TYPES_DATA.TEST_DATA;
                 break;
             case 1:
-                typeSourceData = DATA_SETTINGS.FILE_DATA;
+                typeSourceData = TYPES_DATA.FILE_DATA;
                 break;
             case 2:
-                typeSourceData = DATA_SETTINGS.FIREBASE_DATA;
+                typeSourceData = TYPES_DATA.FIREBASE_DATA;
                 break;
             case 3:
-                typeSourceData = DATA_SETTINGS.DATABASE_DATA;
+                typeSourceData = TYPES_DATA.DATABASE_DATA;
                 break;
             default:
         }

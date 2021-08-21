@@ -18,14 +18,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/card_edit_text_margin"
+            android:layout_marginStart="@dimen/card_edit_text_margin"
             android:text="@string/card_edit_field_name_title_text"
+            android:ems="5"
             android:textColor="@color/gray_text"
             android:textSize="@dimen/card_edit_text_size"/>
 
@@ -35,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:cursorVisible="true"
-            android:ems="8"
+            android:ems="6"
             android:inputType="text"
             android:text="@string/empty_text"
             android:textColor="@color/gray_text"
@@ -51,8 +52,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/card_edit_text_margin"
+            android:layout_marginStart="@dimen/card_edit_text_margin"
             android:text="@string/card_edit_field_description_title_text"
+            android:ems="5"
             android:textColor="@color/gray_text"
             android:textSize="@dimen/card_edit_text_size"/>
 
@@ -62,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:cursorVisible="true"
-            android:ems="10"
+            android:ems="6"
             android:inputType="text"
             android:text="@string/empty_text"
             android:textColor="@color/gray_text"
@@ -70,9 +72,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_gravity="center">
 
         <TextView
             android:layout_width="wrap_content"
@@ -84,7 +87,7 @@
 
         <DatePicker
             android:id="@+id/inputDate"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:calendarViewShown="false"

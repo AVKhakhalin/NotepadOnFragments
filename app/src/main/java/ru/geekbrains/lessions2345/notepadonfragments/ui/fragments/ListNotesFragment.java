@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Calendar;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
-import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
+import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class ListNotesFragment extends Fragment implements Constants, ListNotesFragmentOnClickListener {
+public class ListNotesFragment extends Fragment implements ListNotesFragmentOnClickListener {
 
     private int newYear;
     private int newMonth;

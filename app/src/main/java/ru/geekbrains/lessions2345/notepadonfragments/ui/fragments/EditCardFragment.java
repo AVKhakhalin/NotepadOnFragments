@@ -17,10 +17,10 @@ import java.util.TimeZone;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.CardNote;
-import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
+import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class EditCardFragment extends DialogFragment implements OnClickListener, Constants {
+public class EditCardFragment extends DialogFragment implements OnClickListener {
 
     private final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
     private DatePicker datePicker;
@@ -71,10 +71,10 @@ public class EditCardFragment extends DialogFragment implements OnClickListener,
         datePicker = view.findViewById(R.id.inputDate);
 
         if (activeIndex <= 0) {
-            buttonOk.setText(NAME_EMPTY_NOTE_ADD);
+            buttonOk.setText(CONSTANTS.NAME_EMPTY_NOTE_ADD);
             textView_title.setText("Карточка новой заметки");
-            editText_name.setText(NAME_EMPTY_NOTE);
-            editText_description.setText(DESCRIPTION_EMPTY_NOTE);
+            editText_name.setText(CONSTANTS.NAME_EMPTY_NOTE);
+            editText_description.setText(CONSTANTS.DESCRIPTION_EMPTY_NOTE);
         } else {
             editText_name.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(activeIndex).getName());
             editText_description.setText(((MainActivity) getActivity()).getCardSourceImplement().getCardNote(activeIndex).getDescription());

@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
+import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
+import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class Notepad implements Parcelable, Constants {
+public class Notepad implements Parcelable {
     /* ВАЖНО!!!
     Нулевой элемент всегда задан по-умолчанию!
     Поэтому работа с классом осуществляется с 1 элемента.
@@ -23,7 +24,7 @@ public class Notepad implements Parcelable, Constants {
     В каком-то роде, это буфер пустых элементов для ускорения работы с данным классом
     К сожалению, метод Parcelable не умеет работать с ArrayList<Integer>, поэтому приходится применять смешанные типы данных */
     // Начальный размер массива
-    private final int START_SIZE_INTARRAYS = DELTA_CHANGE_INT_ARRAYS;
+    private final int START_SIZE_INTARRAYS = CONSTANTS.DELTA_CHANGE_INT_ARRAYS;
 
     // Список имен заметок
     private ArrayList<String> name;
@@ -40,9 +41,9 @@ public class Notepad implements Parcelable, Constants {
 
     public Notepad() {
         name = new ArrayList<String>();
-        name.add(NAME_EMPTY_NOTE_ADD);
+        name.add(CONSTANTS.NAME_EMPTY_NOTE_ADD);
         description = new ArrayList<String>();
-        description.add(NAME_EMPTY_NOTE_ADD);
+        description.add(CONSTANTS.NAME_EMPTY_NOTE_ADD);
         text = new ArrayList<String>();
         text.add("");
         dateYear = new int[START_SIZE_INTARRAYS];
@@ -82,13 +83,13 @@ public class Notepad implements Parcelable, Constants {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int numberCurElement = name.size();
         if (newName.equals("")) {
-            name.add(NAME_EMPTY_NOTE);
+            name.add(CONSTANTS.NAME_EMPTY_NOTE);
         } else {
             name.add(newName);
         }
         if (newDescription.equals("")) {
             if (newName.equals("")) {
-                description.add(DESCRIPTION_EMPTY_NOTE);
+                description.add(CONSTANTS.DESCRIPTION_EMPTY_NOTE);
             } else {
                 description.add(newName);
             }
@@ -110,9 +111,9 @@ public class Notepad implements Parcelable, Constants {
                 tempArrayMonth[i] = dateMonth[i];
                 tempArrayDay[i] = dateDay[i];
             }
-            dateYear = new int[numberCurElement + DELTA_CHANGE_INT_ARRAYS];
-            dateMonth = new int[numberCurElement + DELTA_CHANGE_INT_ARRAYS];
-            dateDay = new int[numberCurElement + DELTA_CHANGE_INT_ARRAYS];
+            dateYear = new int[numberCurElement + CONSTANTS.DELTA_CHANGE_INT_ARRAYS];
+            dateMonth = new int[numberCurElement + CONSTANTS.DELTA_CHANGE_INT_ARRAYS];
+            dateDay = new int[numberCurElement + CONSTANTS.DELTA_CHANGE_INT_ARRAYS];
             for (int i = 0; i < tempArrayYear.length; i++) {
                 dateYear[i] = tempArrayYear[i];
                 dateMonth[i] = tempArrayMonth[i];

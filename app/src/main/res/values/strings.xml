@@ -18,6 +18,6 @@
     <string name="card_edit_field_name_title_text">Имя:</string>
     <string name="card_edit_field_description_title_text">Описание:</string>
     <string name="empty_text" />
-    <string name="card_edit_field_data_title_text">Дата:</string>
+    <string name="card_edit_field_data_title_text">Дата создания:</string>
     <string name="menu_action_show_card_note_text">Просмотр карты заметки</string>
 </resources>

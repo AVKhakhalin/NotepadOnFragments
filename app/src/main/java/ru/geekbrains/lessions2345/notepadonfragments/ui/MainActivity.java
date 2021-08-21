@@ -19,15 +19,17 @@ import com.google.android.material.navigation.NavigationView;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.CardSourceImplement;
-import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
+import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
+import ru.geekbrains.lessions2345.notepadonfragments.model.TYPES_DATA;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.EditCardFragment;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.ListNotesFragment;
 
-public class MainActivity extends AppCompatActivity implements Constants {
+public class MainActivity extends AppCompatActivity {
 
-    private DATA_SETTINGS typeSourceData = null;
     private CardSourceImplement cardSourceImplement;
     private EditCardFragment editCardFragment;
+    private CONSTANTS constants = new CONSTANTS();
+    private TYPES_DATA typeSourceData = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
         // Восстановление класса notepad после поворота экрана
         if (savedInstanceState != null) {
-            cardSourceImplement = savedInstanceState.getParcelable(KEY_CARD_SOURCE_IMPLEMENT);
+            cardSourceImplement = savedInstanceState.getParcelable(constants.KEY_CARD_SOURCE_IMPLEMENT);
         } else {
             // Инициализация класса - временного хранилища всех созданных к данному моменту заметок
             cardSourceImplement = new CardSourceImplement(typeSourceData);
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(KEY_CARD_SOURCE_IMPLEMENT, cardSourceImplement);
+        outState.putParcelable(constants.KEY_CARD_SOURCE_IMPLEMENT, cardSourceImplement);
         super.onSaveInstanceState(outState);
     }
 
@@ -184,36 +186,36 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     // Сохранение настроек в SharedPreferences
-    private void saveSettings(DATA_SETTINGS typeSourceData) {
-        SharedPreferences sharedPreferences = getSharedPreferences(KEY_DATA_SETTINGS, MODE_PRIVATE);
+    private void saveSettings(TYPES_DATA typeSourceData) {
+        SharedPreferences sharedPreferences = getSharedPreferences(constants.KEY_DATA_SETTINGS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         // Сохранение типа источника данных
-        if (typeSourceData == DATA_SETTINGS.FILE_DATA) {
-            editor.putInt(KEY_DATA_SETTINGS, 1);
-        } else if (typeSourceData == DATA_SETTINGS.FIREBASE_DATA) {
-            editor.putInt(KEY_DATA_SETTINGS, 2);
-        } else if (typeSourceData == DATA_SETTINGS.DATABASE_DATA) {
-            editor.putInt(KEY_DATA_SETTINGS, 3);
+        if (typeSourceData == TYPES_DATA.FILE_DATA) {
+            editor.putInt(constants.KEY_DATA_SETTINGS, 1);
+        } else if (typeSourceData == TYPES_DATA.FIREBASE_DATA) {
+            editor.putInt(constants.KEY_DATA_SETTINGS, 2);
+        } else if (typeSourceData == TYPES_DATA.DATABASE_DATA) {
+            editor.putInt(constants.KEY_DATA_SETTINGS, 3);
         } else {
             // Случай, когда typeSourceData == null или typeSourceData == DATA_SETTINGS.TEST_DATA
-            editor.putInt(KEY_DATA_SETTINGS, 0);
+            editor.putInt(constants.KEY_DATA_SETTINGS, 0);
         }
         editor.apply();
     }
 
     // Получение настроек из SharedPreferences
     private void getSettings() {
-        SharedPreferences sharedPreferences = getSharedPreferences(KEY_DATA_SETTINGS, MODE_PRIVATE);
-        int timeSourceData = sharedPreferences.getInt(KEY_DATA_SETTINGS, 0);
+        SharedPreferences sharedPreferences = getSharedPreferences(constants.KEY_DATA_SETTINGS, MODE_PRIVATE);
+        int timeSourceData = sharedPreferences.getInt(constants.KEY_DATA_SETTINGS, 0);
         if (timeSourceData == 1) {
-            typeSourceData = DATA_SETTINGS.FILE_DATA;
+            typeSourceData = TYPES_DATA.FILE_DATA;
         } else if (timeSourceData == 2) {
-            typeSourceData = DATA_SETTINGS.FIREBASE_DATA;
+            typeSourceData = TYPES_DATA.FIREBASE_DATA;
         } else if (timeSourceData == 3) {
-            typeSourceData = DATA_SETTINGS.DATABASE_DATA;
+            typeSourceData = TYPES_DATA.DATABASE_DATA;
         } else {
             // Случай, когда typeSourceData == null или typeSourceData == DATA_SETTINGS.TEST_DATA
-            typeSourceData = DATA_SETTINGS.TEST_DATA;
+            typeSourceData = TYPES_DATA.TEST_DATA;
         }
     }
 }

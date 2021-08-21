@@ -8,6 +8,6 @@
     <dimen name="card_date_text_size">20sp</dimen>
     <dimen name="card_edit_text_size">20sp</dimen>
     <dimen name="card_edit_buttons_margin">10dp</dimen>
-    <dimen name="card_edit_text_margin">20dp</dimen>
+    <dimen name="card_edit_text_margin">7dp</dimen>
     <dimen name="card_edit_land_buttons_margin_top">10dp</dimen>
 </resources>

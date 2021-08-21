@@ -5,16 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.ListNotes;
-import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
+import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
 
-public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.ViewHolder> implements Constants {
+public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.ViewHolder> {
 
     private ListNotes listNotes;
     int orientation = 1;

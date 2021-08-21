@@ -6,15 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
-import ru.geekbrains.lessions2345.notepadonfragments.model.Constants;
+import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class TextFragment extends Fragment implements Constants {
+public class TextFragment extends Fragment {
 
     private int index = 0;
     private EditText editText = null;
@@ -24,8 +23,8 @@ public class TextFragment extends Fragment implements Constants {
     public static TextFragment newInstance(int index, boolean isCreatedNewNote) {
         TextFragment textFragment = new TextFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(KEY_INDEX, index);
-        bundle.putBoolean(KEY_CREATED_NEW_NOTE, isCreatedNewNote);
+        bundle.putInt(CONSTANTS.KEY_INDEX, index);
+        bundle.putBoolean(CONSTANTS.KEY_CREATED_NEW_NOTE, isCreatedNewNote);
         textFragment.setArguments(bundle);
         return textFragment;
     }
@@ -39,13 +38,13 @@ public class TextFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Восстановление notepad и index
         if (savedInstanceState == null) {
-            index = getArguments().getInt(KEY_INDEX);
-            isCreatedNewNote = getArguments().getBoolean(KEY_CREATED_NEW_NOTE);
+            index = getArguments().getInt(CONSTANTS.KEY_INDEX);
+            isCreatedNewNote = getArguments().getBoolean(CONSTANTS.KEY_CREATED_NEW_NOTE);
             if (isCreatedNewNote == true) {
                 ((MainActivity) getActivity()).getCardSourceImplement().getCardNote(1).setText("");
             }
         } else {
-            index = savedInstanceState.getInt(KEY_INDEX);
+            index = savedInstanceState.getInt(CONSTANTS.KEY_INDEX);
             isCreatedNewNote = false;
         }
         numberPreviousElementsInNotepad = ((MainActivity) getActivity()).getCardSourceImplement().size();
@@ -68,7 +67,7 @@ public class TextFragment extends Fragment implements Constants {
             isCreatedNewNote = false;
         }
         ((MainActivity) getActivity()).getCardSourceImplement().setCardNote(index, String.valueOf(editText.getText()));
-        outState.putInt(KEY_INDEX, index);
+        outState.putInt(CONSTANTS.KEY_INDEX, index);
         super.onSaveInstanceState(outState);
     }
 
