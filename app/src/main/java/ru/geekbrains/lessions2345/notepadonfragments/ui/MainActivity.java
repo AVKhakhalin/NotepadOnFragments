@@ -21,15 +21,19 @@ import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.CardSourceImplement;
 import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
 import ru.geekbrains.lessions2345.notepadonfragments.model.TYPES_DATA;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.Publisher;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.EditCardFragment;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.ListNotesFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PublisherGetter {
 
     private CardSourceImplement cardSourceImplement;
     private EditCardFragment editCardFragment;
     private CONSTANTS constants = new CONSTANTS();
     private TYPES_DATA typeSourceData = null;
+
+    private Publisher publisher = new Publisher();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Отображение фрагмента со списком заметок
         if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.list_container, ListNotesFragment.newInstance())
-                    .commit();
+            showListNotes();
         }
 
         // Установка AppBarMenu
@@ -141,10 +142,8 @@ public class MainActivity extends AppCompatActivity {
         if (itemId == R.id.action_close) {
             // Закрытие заметки - отображение пустого текстового поля и установка текущего индекса заметки на 0
             cardSourceImplement.setActiveNoteIndex(0);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.text_container, new Fragment())
-                    .commitNow();
+            // Отображение пустого контейнера вместо текста
+            showEmptyText();
             return true;
         } else if (itemId == R.id.action_save) {
             Toast.makeText(this, "Сохранить заметку", Toast.LENGTH_SHORT).show();
@@ -152,18 +151,12 @@ public class MainActivity extends AppCompatActivity {
         } else if (itemId == R.id.action_delete) {
             cardSourceImplement.setDeleteMode(true);
             // Отображение пустого текстового поля
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.text_container, new Fragment())
-                    .commitNow();
+            showEmptyText();
             cardSourceImplement.setDeleteMode(false);
             String deletedNoteName = "\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getName() + "\" (\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getDescription() + "\")" ;
             cardSourceImplement.removeCardNote(cardSourceImplement.getActiveNoteIndex());
             // Отображение фрагмента со списком заметок
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.list_container, ListNotesFragment.newInstance())
-                    .commit();
+            showListNotes();
             Toast.makeText(this, "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.action_filter) {
@@ -171,8 +164,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (itemId == R.id.action_show_card) {
 //            Toast.makeText(this, "Посмотр/создание карты заметки", Toast.LENGTH_SHORT).show();
-            editCardFragment = new EditCardFragment();
-            editCardFragment.show(getFragmentManager(), "");
+            showEditCreateCard();
             return true;
         } else if (itemId == R.id.action_send) {
             Toast.makeText(this, "Переслать заметку", Toast.LENGTH_SHORT).show();
@@ -217,5 +209,34 @@ public class MainActivity extends AppCompatActivity {
             // Случай, когда typeSourceData == null или typeSourceData == DATA_SETTINGS.TEST_DATA
             typeSourceData = TYPES_DATA.TEST_DATA;
         }
+    }
+
+    // Отображение фрагмента со списком заметок
+    private void showListNotes() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.list_container, ListNotesFragment.newInstance())
+                .commit();
+    }
+
+    // Отображение фрагмента с пустым текстом
+    private void showEmptyText() {
+        getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.text_container, new Fragment())
+            .commitNow();
+    }
+
+    // Отображение фрагмента с созданием дл новой заметки карточки или редактированием существующей карточки заметки
+    private void showEditCreateCard() {
+        editCardFragment = new EditCardFragment();
+        editCardFragment.show(getFragmentManager(), "");
+        publisher.subscribe(editCardFragment);
+    }
+
+    // Метод для передачи паблишера другим фрагментам
+    @Override
+    public Publisher getPublisher() {
+        return publisher;
     }
 }

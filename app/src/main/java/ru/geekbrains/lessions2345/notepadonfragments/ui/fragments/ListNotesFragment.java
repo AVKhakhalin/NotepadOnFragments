@@ -1,6 +1,7 @@
 package ru.geekbrains.lessions2345.notepadonfragments.ui.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -19,9 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Calendar;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.CardNote;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.ListNotes;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.Observer;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.Publisher;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class ListNotesFragment extends Fragment implements ListNotesFragmentOnClickListener {
+public class ListNotesFragment extends Fragment implements ListNotesFragmentOnClickListener, Observer {
 
     private int newYear;
     private int newMonth;
@@ -32,10 +38,26 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
 
     private ListNotesAdapter listNotesAdapter;
     private EditCardFragment editCardFragment;
+    private Publisher publisher;
 
     public static ListNotesFragment newInstance() {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
         return listNotesFragment;
+    }
+
+    // Получение паблишера и подписание на него
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        publisher = ((PublisherGetter) context).getPublisher();
+        publisher.subscribe(this);
+    }
+
+    // Отписание от паблишера
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        publisher.unsubscribe(this);
     }
 
     @Override
@@ -71,14 +93,14 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
         recyclerView.setAdapter(listNotesAdapter);
 
         // Восстановление отображения содержимого просматриваемой заметки до удаления другой заметки через контекстное меню
-        int oldActiveNoteIndexBeforeDelete = mainActivity.getCardSourceImplement().getOldActiveNoteIndexBeforDelete();
-        if (oldActiveNoteIndexBeforeDelete > 0) {
-            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+        int oldActiveNoteIndexBeforeDeleteBeforeDelete = mainActivity.getCardSourceImplement().getOldActiveNoteIndexBeforeDelete();
+        if (oldActiveNoteIndexBeforeDeleteBeforeDelete > 0) {
+            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
             // Загрузка фрагмента c текстом TextFragment
             requireActivity()
                     .getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.text_container, TextFragment.newInstance(oldActiveNoteIndexBeforeDelete, false))
+                    .replace(R.id.text_container, TextFragment.newInstance(oldActiveNoteIndexBeforeDeleteBeforeDelete, false))
                     .commit();
         }
     }
@@ -183,8 +205,8 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                 break;
             case R.id.context_menu_action_delete_card:
                 // Удаление карточки через контекстное меню
-                int oldActiveNoteIndex = mainActivity.getCardSourceImplement().getActiveNoteIndex();
-                if (oldActiveNoteIndex > 0) {
+                int oldActiveNoteIndexBeforeDelete = mainActivity.getCardSourceImplement().getActiveNoteIndex();
+                if (oldActiveNoteIndexBeforeDelete > 0) {
                     mainActivity.getCardSourceImplement().setActiveNoteIndex(position);
                     // Удаление заметки
                     String deletedNoteName = "\"" + mainActivity.getCardSourceImplement().getCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + mainActivity.getCardSourceImplement().getCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")";
@@ -192,17 +214,17 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                     Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
 
                     // Отображение обновлённой информации
-                    if (oldActiveNoteIndex != position) {
-                        if (oldActiveNoteIndex > position) {
-                            oldActiveNoteIndex--;
-                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(oldActiveNoteIndex);
+                    if (oldActiveNoteIndexBeforeDelete != position) {
+                        if (oldActiveNoteIndexBeforeDelete > position) {
+                            oldActiveNoteIndexBeforeDelete--;
+                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(oldActiveNoteIndexBeforeDelete);
                         } else {
-                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(oldActiveNoteIndex);
+                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(oldActiveNoteIndexBeforeDelete);
                         }
-                        mainActivity.getCardSourceImplement().setActiveNoteIndex(oldActiveNoteIndex);
+                        mainActivity.getCardSourceImplement().setActiveNoteIndex(oldActiveNoteIndexBeforeDelete);
                     } else {
                         mainActivity.getCardSourceImplement().setActiveNoteIndex(0);
-                        mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+                        mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
                         // Отображение пустого текстового поля
                         mainActivity.getCardSourceImplement().setDeleteMode(true);
                         requireActivity()
@@ -213,7 +235,7 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                         mainActivity.getCardSourceImplement().setDeleteMode(false);
                     }
                     updateListNotes();
-                } else if ((oldActiveNoteIndex == 0) && (mainActivity.getCardSourceImplement().size() > 0)) {
+                } else if ((oldActiveNoteIndexBeforeDelete == 0) && (mainActivity.getCardSourceImplement().size() > 0)) {
                     mainActivity.getCardSourceImplement().setActiveNoteIndex(position);
                     // Удаление заметки
                     String deletedNoteName = "\"" + mainActivity.getCardSourceImplement().getCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + mainActivity.getCardSourceImplement().getCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")";
@@ -221,7 +243,7 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                     Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
 
                     mainActivity.getCardSourceImplement().setActiveNoteIndex(0);
-                    mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+                    mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
                     updateListNotes();
                 }
                 break;
@@ -245,5 +267,15 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                 .beginTransaction()
                 .replace(R.id.text_container, TextFragment.newInstance(index, true))
                 .commit();
+    }
+
+    // Методы обновления данных через паблишер
+    @Override
+    public void updateState(CardNote cardNote, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDeleteBeforeDelete) {
+
+    }
+    @Override
+    public void updateState(ListNotes listNotes, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDeleteBeforeDelete) {
+
     }
 }

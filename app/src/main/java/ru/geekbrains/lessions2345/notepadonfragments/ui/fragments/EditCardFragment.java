@@ -1,6 +1,7 @@
 package ru.geekbrains.lessions2345.notepadonfragments.ui.fragments;
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
@@ -17,10 +18,14 @@ import java.util.TimeZone;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.CardNote;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.ListNotes;
 import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.Observer;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.Publisher;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class EditCardFragment extends DialogFragment implements OnClickListener {
+public class EditCardFragment extends DialogFragment implements OnClickListener, Observer {
 
     private final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
     private DatePicker datePicker;
@@ -29,6 +34,23 @@ public class EditCardFragment extends DialogFragment implements OnClickListener 
     private int activeIndex = 0;
     private Button buttonOk;
     private TextView textView_title;
+
+    private Publisher publisher;
+
+    // Получение паблишера и подписание на него
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        publisher = ((PublisherGetter) context).getPublisher();
+        publisher.subscribe(this);
+    }
+
+    // Отписание от паблишера
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        publisher.unsubscribe(this);
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_card, null);
@@ -96,5 +118,15 @@ public class EditCardFragment extends DialogFragment implements OnClickListener 
                 .replace(R.id.list_container, ListNotesFragment.newInstance())
                 .commit();
         dismiss();
+    }
+
+    // Методы обновления данных через паблишер
+    @Override
+    public void updateState(CardNote cardNote, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete) {
+
+    }
+    @Override
+    public void updateState(ListNotes listNotes, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete) {
+
     }
 }

@@ -1,5 +1,6 @@
 package ru.geekbrains.lessions2345.notepadonfragments.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,18 +9,27 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.CardNote;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.ListNotes;
 import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.Observer;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.Publisher;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
-public class TextFragment extends Fragment {
+public class TextFragment extends Fragment implements Observer {
 
     private int index = 0;
     private EditText editText = null;
     private boolean isCreatedNewNote = false;
     private int numberPreviousElementsInNotepad = 1;
+
+    private CardNote cardNote;
+    private Publisher publisher;
 
     public static TextFragment newInstance(int index, boolean isCreatedNewNote) {
         TextFragment textFragment = new TextFragment();
@@ -28,6 +38,21 @@ public class TextFragment extends Fragment {
         bundle.putBoolean(CONSTANTS.KEY_CREATED_NEW_NOTE, isCreatedNewNote);
         textFragment.setArguments(bundle);
         return textFragment;
+    }
+
+    // Получение паблишера и подписание на него
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        publisher = ((PublisherGetter) context).getPublisher();
+        publisher.subscribe(this);
+    }
+
+    // Отписание от паблишера
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        publisher.unsubscribe(this);
     }
 
     @Override
@@ -88,5 +113,15 @@ public class TextFragment extends Fragment {
             mainActivity.getCardSourceImplement().setCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex(), String.valueOf(editText.getText()));
         }
         super.onStop();
+    }
+
+    // Методы обновления данных через паблишер
+    @Override
+    public void updateState(CardNote cardNote, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete) {
+        Toast.makeText(getContext(), String.valueOf("TextFragment: " + cardNote.getText()), Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void updateState(ListNotes listNotes, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete) {
+        Toast.makeText(getContext(), String.valueOf("TextFragment: " + cardNote.getText()), Toast.LENGTH_SHORT).show();
     }
 }

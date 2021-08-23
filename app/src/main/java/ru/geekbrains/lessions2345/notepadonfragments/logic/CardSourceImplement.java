@@ -13,24 +13,25 @@ public class CardSourceImplement implements CardSource, Parcelable {
     private TYPES_DATA typeSourceData;
     private int typeSourceData_int;
     private Notepad notepad = new Notepad();
+
     private int activeNoteIndex = 0;
     private boolean deleteMode = false;
-    private int oldActiveNoteIndexBeforDelete = 0;
+    private int oldActiveNoteIndexBeforeDelete = 0;
 
-    public int getOldActiveNoteIndexBeforDelete() {
-        return oldActiveNoteIndexBeforDelete;
+    public int getOldActiveNoteIndexBeforeDelete() {
+        return oldActiveNoteIndexBeforeDelete;
     }
 
-    public void setOldActiveNoteIndexBeforDelete(int oldActiveNoteIndexBeforDelete) {
-        this.oldActiveNoteIndexBeforDelete = oldActiveNoteIndexBeforDelete;
+    public void setOldActiveNoteIndexBeforeDelete(int oldActiveNoteIndexBeforDelete) {
+        this.oldActiveNoteIndexBeforeDelete = oldActiveNoteIndexBeforDelete;
     }
 
     public int getActiveNoteIndex() {
         return activeNoteIndex;
     }
 
-    public void setActiveNoteIndex(int activeNoteIndes) {
-        this.activeNoteIndex = activeNoteIndes;
+    public void setActiveNoteIndex(int activeNoteIndex) {
+        this.activeNoteIndex = activeNoteIndex;
     }
 
     public CardSourceImplement(TYPES_DATA typeSourceData) {
