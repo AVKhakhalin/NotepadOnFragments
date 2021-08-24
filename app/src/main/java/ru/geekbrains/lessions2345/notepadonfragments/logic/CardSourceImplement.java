@@ -80,18 +80,7 @@ public class CardSourceImplement implements CardSource, Parcelable {
     // Метод получения количества доступных заметок
     @Override
     public int size() {
-        switch (typeSourceData) {
-            case TEST_DATA:
-                return notepad.getNumberElements();
-            case FILE_DATA:
-                return 0;
-            case FIREBASE_DATA:
-                return 0;
-            case DATABASE_DATA:
-                return 0;
-            default:
-                return 0;
-        }
+        return notepad.getNumberElements();
     }
 
     // Метод получения карты с заметкой
@@ -117,53 +106,28 @@ public class CardSourceImplement implements CardSource, Parcelable {
     // Метод добавления карты с заметкой
     @Override
     public void addCardNote(CardNote cardNote) {
-        switch (typeSourceData) {
-            case TEST_DATA:
-                notepad.add(cardNote.getName(), cardNote.getDescription());
-                // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
-                notepad.setText(1, cardNote.getText());
-                // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
-                notepad.setDateYear(1, cardNote.getDateYear());
-                // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
-                notepad.setDateMonth(1, cardNote.getDateMonth());
-                // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
-                notepad.setDateDay(1, cardNote.getDateDay());
-                break;
-            case FILE_DATA:
-                break;
-            case FIREBASE_DATA:
-
-                break;
-            case DATABASE_DATA:
-                break;
-            default:
-                break;
-        }
+        notepad.add(cardNote.getName(), cardNote.getDescription());
+        // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
+        notepad.setText(1, cardNote.getText());
+        // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
+        notepad.setDateYear(1, cardNote.getDateYear());
+        // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
+        notepad.setDateMonth(1, cardNote.getDateMonth());
+        // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
+        notepad.setDateDay(1, cardNote.getDateDay());
     }
 
     @Override
     public void addCardNote() {
-        switch (typeSourceData) {
-            case TEST_DATA:
-                notepad.add("", "");
-                // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
-                notepad.setText(1, "");
-                // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
-                notepad.setDateYear(1, Calendar.getInstance(TimeZone.getDefault()).get(Calendar.YEAR));
-                // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
-                notepad.setDateMonth(1, Calendar.getInstance(TimeZone.getDefault()).get(Calendar.MONTH) + 1);
-                // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
-                notepad.setDateDay(1, Calendar.getInstance(TimeZone.getDefault()).get(Calendar.DAY_OF_MONTH));
-                break;
-            case FILE_DATA:
-                break;
-            case FIREBASE_DATA:
-                break;
-            case DATABASE_DATA:
-                break;
-            default:
-                break;
-        }
+        notepad.add("", "");
+        // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
+        notepad.setText(1, "");
+        // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
+        notepad.setDateYear(1, Calendar.getInstance(TimeZone.getDefault()).get(Calendar.YEAR));
+        // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
+        notepad.setDateMonth(1, Calendar.getInstance(TimeZone.getDefault()).get(Calendar.MONTH) + 1);
+        // Добавляем в индекс 1, потому что при добавлении нового элемента он всегда в классе Notepad устанавливается с индексом 1, а остальные элементы смещаются вниз
+        notepad.setDateDay(1, Calendar.getInstance(TimeZone.getDefault()).get(Calendar.DAY_OF_MONTH));
     }
 
     // Метод установки значений в карте с заметкой
@@ -291,4 +255,8 @@ public class CardSourceImplement implements CardSource, Parcelable {
             return new CardSourceImplement[size];
         }
     };
+
+    public CardsSourceFirebaseImpl getCardsSourceFirebase() {
+        return cardsSourceFirebase;
+    }
 }

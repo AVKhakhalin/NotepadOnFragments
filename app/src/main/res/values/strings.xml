@@ -2,7 +2,7 @@
     <string name="app_name">Заметки</string>
     <string name="action_search_note_text">Поиск заметки</string>
     <string name="action_close_note_text">Закрыть заметку</string>
-    <string name="action_save_note_text">Сохранить заметку</string>
+    <string name="action_save_note_text">Сохранить заметки в Firestore</string>
     <string name="action_filter_output_note_text">Фильтр вывода заметок</string>
     <string name="action_delete_note_text">Удалить заметку</string>
     <string name="action_show_card_note_text">Просмотр/создание карты заметки</string>

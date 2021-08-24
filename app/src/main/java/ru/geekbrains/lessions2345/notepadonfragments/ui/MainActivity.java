@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private CONSTANTS constants = new CONSTANTS();
     private TYPES_DATA typeSourceData = TYPES_DATA.FIREBASE_DATA;
 
-    CardsSourceFirebaseImpl cardsSourceFirebase = new CardsSourceFirebaseImpl();
+//    CardsSourceFirebaseImpl cardsSourceFirebase = new CardsSourceFirebaseImpl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         // Создание облачной базы данных
         // Тестовая запись данных в облачную базу данных
 //        for (int i = 1; i <= cardSourceImplement.size(); i++) {
-            cardsSourceFirebase.addCardNoteFirebase(new CardNote( "name", "description", "text", 2021, 8, 24));
+//            cardsSourceFirebase.addCardNoteFirebase(new CardNote( "name", "description", "text", 2021, 8, 24));
 //        }
     }
 
@@ -154,7 +154,10 @@ public class MainActivity extends AppCompatActivity {
             showEmptyTextFragment();
             return true;
         } else if (itemId == R.id.action_save) {
-            Toast.makeText(this, "Сохранить заметку", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Заметки сохранены в Firestore", Toast.LENGTH_SHORT).show();
+            for (int i = 1; i <= cardSourceImplement.size(); i++) {
+                cardSourceImplement.getCardsSourceFirebase().addCardNoteFirebase(cardSourceImplement.getCardNote(i));
+            }
             return true;
         } else if (itemId == R.id.action_delete) {
             cardSourceImplement.setDeleteMode(true);
