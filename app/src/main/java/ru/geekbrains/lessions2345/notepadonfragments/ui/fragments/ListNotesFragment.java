@@ -38,7 +38,12 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
 
     private ListNotesAdapter listNotesAdapter;
     private EditCardFragment editCardFragment;
-    private Publisher publisher;
+    private Publisher publisher = null;
+    private CardNote cardNote = null;
+    private int activeNoteIndex = 0;
+    private boolean deleteMode = false;
+    private int oldActiveNoteIndexBeforeDelete = 0;
+    private boolean createNewNoteMode = false;
 
     public static ListNotesFragment newInstance() {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
@@ -123,7 +128,18 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                     mainActivity.getCardSourceImplement().setActiveNoteIndex(1);
                     updateTextNote(indexChoisedElement);
                 } else {
+/*
                     mainActivity.getCardSourceImplement().setActiveNoteIndex(position);
+                    // Загрузка фрагмента c текстом TextFragment
+                    updateTextNote(position);
+*/
+                    createNewNoteMode = false;
+                    oldActiveNoteIndexBeforeDelete = activeNoteIndex;
+                    activeNoteIndex = position;
+                    deleteMode = false;
+//                    publisher.notify(null, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete);
+                    publisher.notify(null, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete, "");
+
                     // Загрузка фрагмента c текстом TextFragment
                     updateTextNote(position);
                 }
@@ -269,13 +285,13 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                 .commit();
     }
 
-    // Методы обновления данных через паблишер
+    // Метод обновления данных через паблишер
     @Override
-    public void updateState(CardNote cardNote, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDeleteBeforeDelete) {
-
-    }
-    @Override
-    public void updateState(ListNotes listNotes, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDeleteBeforeDelete) {
-
+    public void updateState(CardNote cardNote, boolean createNewCardNoteMode, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDeleteBeforeDelete, String className) {
+        this.cardNote = cardNote;
+        this.createNewNoteMode = createNewCardNoteMode;
+        this.activeNoteIndex = activeNoteIndex;
+        this.deleteMode = deleteMode;
+        this.oldActiveNoteIndexBeforeDelete = oldActiveNoteIndexBeforeDelete;
     }
 }

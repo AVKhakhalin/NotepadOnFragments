@@ -28,14 +28,19 @@ import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 public class EditCardFragment extends DialogFragment implements OnClickListener, Observer {
 
     private final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-    private DatePicker datePicker;
-    private EditText editText_name;
-    private EditText editText_description;
+    private DatePicker datePicker = null;
+    private EditText editText_name = null;
+    private EditText editText_description = null;
     private int activeIndex = 0;
-    private Button buttonOk;
-    private TextView textView_title;
+    private Button buttonOk = null;
+    private TextView textView_title = null;
 
-    private Publisher publisher;
+    private Publisher publisher = null;
+    private CardNote cardNote = null;
+    private int activeNoteIndex = 0;
+    private boolean deleteMode = false;
+    private int oldActiveNoteIndexBeforeDelete = 0;
+    private boolean createNewNoteMode = false;
 
     // Получение паблишера и подписание на него
     @Override
@@ -120,13 +125,13 @@ public class EditCardFragment extends DialogFragment implements OnClickListener,
         dismiss();
     }
 
-    // Методы обновления данных через паблишер
+    // Метод обновления данных через паблишер
     @Override
-    public void updateState(CardNote cardNote, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete) {
-
-    }
-    @Override
-    public void updateState(ListNotes listNotes, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete) {
-
+    public void updateState(CardNote cardNote, boolean createNewCardNoteMode, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete, String className) {
+        this.cardNote = cardNote;
+        this.createNewNoteMode = createNewCardNoteMode;
+        this.activeNoteIndex = activeNoteIndex;
+        this.deleteMode = deleteMode;
+        this.oldActiveNoteIndexBeforeDelete = oldActiveNoteIndexBeforeDelete;
     }
 }

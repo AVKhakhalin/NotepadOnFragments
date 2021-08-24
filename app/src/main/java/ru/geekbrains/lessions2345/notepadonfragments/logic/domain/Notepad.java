@@ -183,7 +183,7 @@ public class Notepad implements Parcelable {
         if ((index >= 0) && (index <= getNumberElements())) {
             return name.get(index);
         } else {
-            return "";
+            return CONSTANTS.NAME_EMPTY_NOTE;
         }
     }
 
@@ -208,7 +208,7 @@ public class Notepad implements Parcelable {
         if ((index > 0) && (index <= getNumberElements())) {
             return description.get(index);
         } else {
-            return "";
+            return CONSTANTS.DESCRIPTION_EMPTY_NOTE;
         }
     }
 

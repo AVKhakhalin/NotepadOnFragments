@@ -28,8 +28,12 @@ public class TextFragment extends Fragment implements Observer {
     private boolean isCreatedNewNote = false;
     private int numberPreviousElementsInNotepad = 1;
 
+    private Publisher publisher = null;
     private CardNote cardNote;
-    private Publisher publisher;
+    private int activeNoteIndex = 0;
+    private boolean deleteMode = false;
+    private int oldActiveNoteIndexBeforeDelete = 0;
+    private boolean createNewNoteMode = false;
 
     public static TextFragment newInstance(int index, boolean isCreatedNewNote) {
         TextFragment textFragment = new TextFragment();
@@ -56,13 +60,8 @@ public class TextFragment extends Fragment implements Observer {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        MainActivity mainActivity = ((MainActivity) getActivity());
+/*        MainActivity mainActivity = ((MainActivity) getActivity());
         // Восстановление notepad и index
         if (savedInstanceState == null) {
             index = getArguments().getInt(CONSTANTS.KEY_INDEX);
@@ -83,12 +82,25 @@ public class TextFragment extends Fragment implements Observer {
         editText.setText(mainActivity.getCardSourceImplement().getCardNote(index).getText());
         // Форматирование текстового поля
         editText.setTextSize(20);
+        linearLayout.addView(editText);*/
+
+        // Установка начальных значений для заметки на фрагменте
+        publisher.notify(null, false, -1, false, -1, this.getClass().getSimpleName());
+        // Установка значения текстового поля
+        View view = inflater.inflate(R.layout.fragment_text, container, false);
+        LinearLayout linearLayout = (LinearLayout) view;
+        editText = new EditText(getContext());
+        editText.setText(cardNote.getText());
+        // Форматирование текстового поля
+        editText.setTextSize(20);
         linearLayout.addView(editText);
+        Toast.makeText(getContext(), String.valueOf(activeNoteIndex  + " " + deleteMode + " " + oldActiveNoteIndexBeforeDelete + " " + createNewNoteMode + " \n" + cardNote.getText()), Toast.LENGTH_SHORT).show();
         return view;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+/*
         MainActivity mainActivity = ((MainActivity) getActivity());
         if (numberPreviousElementsInNotepad != mainActivity.getCardSourceImplement().size()) {
             index++;
@@ -96,12 +108,13 @@ public class TextFragment extends Fragment implements Observer {
         }
         mainActivity.getCardSourceImplement().setCardNote(index, String.valueOf(editText.getText()));
         outState.putInt(CONSTANTS.KEY_INDEX, index);
+*/
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onStop() {
-        MainActivity mainActivity = ((MainActivity) getActivity());
+/*        MainActivity mainActivity = ((MainActivity) getActivity());
         if (numberPreviousElementsInNotepad == mainActivity.getCardSourceImplement().size()) {
             // Случай редактирования элемента
             mainActivity.getCardSourceImplement().setCardNote(index, String.valueOf(editText.getText()));
@@ -111,17 +124,28 @@ public class TextFragment extends Fragment implements Observer {
         } else if (numberPreviousElementsInNotepad > mainActivity.getCardSourceImplement().size()) {
             // Случай удаления элемента
             mainActivity.getCardSourceImplement().setCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex(), String.valueOf(editText.getText()));
-        }
+        }*/
+
+        // Установка начальных значений для заметки на фрагменте
+        publisher.notify(null, false, -1, false, -1, this.getClass().getSimpleName());
+//        cardNote.setText(cardNote.getText());
+        cardNote.setText(String.valueOf(editText.getText()));
+//        publisher.notify(cardNote, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete, "");
+        int tempActiveNoteIndex = activeNoteIndex;
+        publisher.notify(cardNote, false, oldActiveNoteIndexBeforeDelete, false, oldActiveNoteIndexBeforeDelete, "");
+        Toast.makeText(getContext(), String.valueOf(activeNoteIndex + "   " + oldActiveNoteIndexBeforeDelete), Toast.LENGTH_SHORT).show();
+        activeNoteIndex = tempActiveNoteIndex;
+        publisher.notify(null, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete, "");
         super.onStop();
     }
 
-    // Методы обновления данных через паблишер
+    // Метод обновления данных через паблишер
     @Override
-    public void updateState(CardNote cardNote, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete) {
-        Toast.makeText(getContext(), String.valueOf("TextFragment: " + cardNote.getText()), Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    public void updateState(ListNotes listNotes, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete) {
-        Toast.makeText(getContext(), String.valueOf("TextFragment: " + cardNote.getText()), Toast.LENGTH_SHORT).show();
+    public void updateState(CardNote cardNote, boolean createNewCardNoteMode, int activeNoteIndex, boolean deleteMode, int oldActiveNoteIndexBeforeDelete, String className) {
+        this.cardNote = cardNote;
+        this.createNewNoteMode = createNewCardNoteMode;
+        this.activeNoteIndex = activeNoteIndex;
+        this.deleteMode = deleteMode;
+        this.oldActiveNoteIndexBeforeDelete = oldActiveNoteIndexBeforeDelete;
     }
 }

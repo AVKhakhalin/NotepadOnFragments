@@ -1,7 +1,10 @@
 package ru.geekbrains.lessions2345.notepadonfragments.logic;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.RequiresApi;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -17,13 +20,26 @@ public class CardSourceImplement implements CardSource, Parcelable {
     private int activeNoteIndex = 0;
     private boolean deleteMode = false;
     private int oldActiveNoteIndexBeforeDelete = 0;
+    private boolean createNewNoteMode = false;
+
+    public boolean getDeleteMode() {
+        return deleteMode;
+    }
+
+    public boolean getCreateNewNoteMode() {
+        return createNewNoteMode;
+    }
+
+    public void setCreateNewNoteMode(boolean createNewNoteMode) {
+        this.createNewNoteMode = createNewNoteMode;
+    }
 
     public int getOldActiveNoteIndexBeforeDelete() {
         return oldActiveNoteIndexBeforeDelete;
     }
 
-    public void setOldActiveNoteIndexBeforeDelete(int oldActiveNoteIndexBeforDelete) {
-        this.oldActiveNoteIndexBeforeDelete = oldActiveNoteIndexBeforDelete;
+    public void setOldActiveNoteIndexBeforeDelete(int oldActiveNoteIndexBeforeDelete) {
+        this.oldActiveNoteIndexBeforeDelete = oldActiveNoteIndexBeforeDelete;
     }
 
     public int getActiveNoteIndex() {
@@ -116,6 +132,8 @@ public class CardSourceImplement implements CardSource, Parcelable {
     // Метод добавления карты с заметкой
     @Override
     public void addCardNote(CardNote cardNote) {
+        activeNoteIndex = 1;
+        createNewNoteMode = false;
         switch (typeSourceData) {
             case TEST_DATA:
                 notepad.add(cardNote.getName(), cardNote.getDescription());
@@ -141,6 +159,8 @@ public class CardSourceImplement implements CardSource, Parcelable {
 
     @Override
     public void addCardNote() {
+        activeNoteIndex = 1;
+        createNewNoteMode = false;
         switch (typeSourceData) {
             case TEST_DATA:
                 notepad.add("", "");
@@ -203,6 +223,13 @@ public class CardSourceImplement implements CardSource, Parcelable {
             notepad.setDateDay(position, day);
         }
     }
+    @Override
+    public void setCardNote(boolean deleteMode, int activeNoteIndex, boolean createNewNoteMode, int oldActiveNoteIndexBeforeDelete) {
+        this.deleteMode = deleteMode;
+        this.activeNoteIndex = activeNoteIndex;
+        this.createNewNoteMode = createNewNoteMode;
+        this.oldActiveNoteIndexBeforeDelete = oldActiveNoteIndexBeforeDelete;
+    }
 
     // Установка режима блокировки записи данных во время удаления заметки
     public void setDeleteMode(boolean deleteMode) {
@@ -253,6 +280,21 @@ public class CardSourceImplement implements CardSource, Parcelable {
         }
     }
 
+    private int convertBooleanToInt(boolean booleanValue) {
+        if (booleanValue) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private boolean convertIntToBoolean(int intValue) {
+        if (intValue == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     // Методы для парселизации объекта
     @Override
@@ -264,12 +306,20 @@ public class CardSourceImplement implements CardSource, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(typeSourceData_int);
         dest.writeParcelable(notepad, flags);
+        dest.writeInt(activeNoteIndex);
+        dest.writeInt(convertBooleanToInt(deleteMode));
+        dest.writeInt(oldActiveNoteIndexBeforeDelete);
+        dest.writeInt(convertBooleanToInt(createNewNoteMode));
     }
 
     protected CardSourceImplement(Parcel in) {
         typeSourceData_int = in.readInt();
         setTypeSourceData(typeSourceData_int);
         notepad = in.readParcelable(Notepad.class.getClassLoader());
+        activeNoteIndex = in.readInt();
+        deleteMode = convertIntToBoolean(in.readInt());
+        oldActiveNoteIndexBeforeDelete = in.readInt();
+        createNewNoteMode = convertIntToBoolean(in.readInt());
     }
 
     public static final Creator<CardSourceImplement> CREATOR = new Creator<CardSourceImplement>() {

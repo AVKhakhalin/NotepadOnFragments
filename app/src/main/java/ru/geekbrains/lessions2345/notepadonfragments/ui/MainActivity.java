@@ -18,22 +18,31 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.navigation.NavigationView;
 
 import ru.geekbrains.lessions2345.notepadonfragments.R;
+import ru.geekbrains.lessions2345.notepadonfragments.logic.CardNote;
 import ru.geekbrains.lessions2345.notepadonfragments.logic.CardSourceImplement;
 import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
 import ru.geekbrains.lessions2345.notepadonfragments.model.TYPES_DATA;
+import ru.geekbrains.lessions2345.notepadonfragments.observer.Observer;
 import ru.geekbrains.lessions2345.notepadonfragments.observer.Publisher;
 import ru.geekbrains.lessions2345.notepadonfragments.observer.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.EditCardFragment;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.fragments.ListNotesFragment;
 
-public class MainActivity extends AppCompatActivity implements PublisherGetter {
+public class MainActivity extends AppCompatActivity implements PublisherGetter, Observer {
 
-    private CardSourceImplement cardSourceImplement;
-    private EditCardFragment editCardFragment;
+    private CardSourceImplement cardSourceImplement = null;
+    private EditCardFragment editCardFragment = null;
     private CONSTANTS constants = new CONSTANTS();
     private TYPES_DATA typeSourceData = null;
 
-    private Publisher publisher = new Publisher();
+    private Publisher publisher = new Publisher(this);
+    private CardNote cardNote = null;
+    private int activeNoteIndex = 0;
+    private boolean deleteMode = false;
+    private int oldActiveNoteIndexBeforeDelete = 0;
+    private boolean createNewNoteMode = false;
+
+    private int counter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter {
 
         // Установка DrawNavigationMenu
         setupDrawNavigationMenu();
+
+        // Подписание на паблишер для получение обратной связи и сохранение данных в классе CardSourceImplement
+        publisher.subscribe(this);
     }
 
     private void setupDrawNavigationMenu() {
@@ -82,10 +94,8 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 // Метод для закрытия выплывающего меню после нажатия на кнопку
                 drawerLayout.closeDrawer(GravityCompat.START);
-
                 Toast.makeText(MainActivity.this, "Вы нажали на кнопку", Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -98,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter {
         setSupportActionBar(toolbar);
     }
 
+    // УБРАТЬ
     // Метод для считывания класса getCardSourceImplement во фрагменты
     public CardSourceImplement getCardSourceImplement() {
         return cardSourceImplement;
@@ -214,9 +225,9 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter {
     // Отображение фрагмента со списком заметок
     private void showListNotes() {
         getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.list_container, ListNotesFragment.newInstance())
-                .commit();
+            .beginTransaction()
+            .replace(R.id.list_container, ListNotesFragment.newInstance())
+            .commit();
     }
 
     // Отображение фрагмента с пустым текстом
@@ -227,16 +238,63 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter {
             .commitNow();
     }
 
-    // Отображение фрагмента с созданием дл новой заметки карточки или редактированием существующей карточки заметки
+    // Отображение фрагмента с созданием для новой заметки карточки или редактированием существующей карточки заметки
     private void showEditCreateCard() {
         editCardFragment = new EditCardFragment();
         editCardFragment.show(getFragmentManager(), "");
         publisher.subscribe(editCardFragment);
+        publisher.notify(cardNote, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete, "*!*");
     }
 
     // Метод для передачи паблишера другим фрагментам
     @Override
     public Publisher getPublisher() {
         return publisher;
+    }
+
+    // Метод обновления данных через паблишер
+    @Override
+    public void updateState(CardNote _cardNote, boolean _createNewNoteMode, int _activeNoteIndex, boolean _deleteMode, int _oldActiveNoteIndexBeforeDelete, String className) {
+        if ((_cardNote == null) && (_activeNoteIndex == -1)) {
+            activeNoteIndex = cardSourceImplement.getActiveNoteIndex();
+            cardNote = cardSourceImplement.getCardNote(activeNoteIndex);
+            createNewNoteMode = cardSourceImplement.getCreateNewNoteMode();
+            deleteMode = cardSourceImplement.getDeleteMode();
+            oldActiveNoteIndexBeforeDelete = cardSourceImplement.getOldActiveNoteIndexBeforeDelete();
+            publisher.notify(cardNote, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete, this.getClass().getSimpleName());
+        } else if ((_cardNote == null) && (className.length() > 0)) {
+            cardSourceImplement.setActiveNoteIndex(_activeNoteIndex);
+            cardNote = cardSourceImplement.getCardNote(_activeNoteIndex);
+            cardSourceImplement.setCreateNewNoteMode(_createNewNoteMode);
+            cardSourceImplement.setDeleteMode(_deleteMode);
+            cardSourceImplement.setOldActiveNoteIndexBeforeDelete(_oldActiveNoteIndexBeforeDelete);
+            publisher.notify(cardNote, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete, this.getClass().getSimpleName());
+        } else {
+            if (_cardNote == null) {
+                _cardNote = cardSourceImplement.getCardNote(_activeNoteIndex);
+            }
+
+            // Сохранение изменений в классе CardSourceImplement
+            if ((_createNewNoteMode == false) && (_deleteMode == false)) {
+                cardSourceImplement.setCardNote(_createNewNoteMode, _activeNoteIndex, _deleteMode, _oldActiveNoteIndexBeforeDelete);
+                cardSourceImplement.setCardNote(_activeNoteIndex, _cardNote);
+//                publisher.notify(_cardNote, _createNewNoteMode, _activeNoteIndex, _deleteMode, _oldActiveNoteIndexBeforeDelete, "");
+            }
+
+/*            // Добавление заметки
+            if (createNewNoteMode == true) {
+                cardSourceImplement.addCardNote();
+                activeNoteIndex = cardSourceImplement.getActiveNoteIndex();
+                cardNote = cardSourceImplement.getCardNote(activeNoteIndex);
+                createNewNoteMode = cardSourceImplement.getCreateNewNoteMode();
+                publisher.notify(cardNote, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete);
+            }
+
+            // Удаление заметки
+            if (deleteMode == true) {
+                // Доработать алгоритм
+                publisher.notify(cardNote, createNewNoteMode, activeNoteIndex, deleteMode, oldActiveNoteIndexBeforeDelete);
+            }*/
+        }
     }
 }
