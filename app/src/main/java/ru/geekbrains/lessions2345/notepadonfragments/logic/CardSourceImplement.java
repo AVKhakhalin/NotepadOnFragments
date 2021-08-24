@@ -15,14 +15,22 @@ public class CardSourceImplement implements CardSource, Parcelable {
     private Notepad notepad = new Notepad();
     private int activeNoteIndex = 0;
     private boolean deleteMode = false;
-    private int oldActiveNoteIndexBeforDelete = 0;
+    private int oldActiveNoteIndexBeforeDelete = 0;
 
-    public int getOldActiveNoteIndexBeforDelete() {
-        return oldActiveNoteIndexBeforDelete;
+    private CardsSourceFirebaseImpl cardsSourceFirebase;
+
+    public CardSourceImplement(TYPES_DATA typeSourceData) {
+        this.typeSourceData = typeSourceData;
+        setTypeSourceData_Int(typeSourceData);
+        initNotepad();
     }
 
-    public void setOldActiveNoteIndexBeforDelete(int oldActiveNoteIndexBeforDelete) {
-        this.oldActiveNoteIndexBeforDelete = oldActiveNoteIndexBeforDelete;
+    public int getOldActiveNoteIndexBeforeDelete() {
+        return oldActiveNoteIndexBeforeDelete;
+    }
+
+    public void setOldActiveNoteIndexBeforeDelete(int oldActiveNoteIndexBeforeDelete) {
+        this.oldActiveNoteIndexBeforeDelete = oldActiveNoteIndexBeforeDelete;
     }
 
     public int getActiveNoteIndex() {
@@ -31,12 +39,6 @@ public class CardSourceImplement implements CardSource, Parcelable {
 
     public void setActiveNoteIndex(int activeNoteIndes) {
         this.activeNoteIndex = activeNoteIndes;
-    }
-
-    public CardSourceImplement(TYPES_DATA typeSourceData) {
-        this.typeSourceData = typeSourceData;
-        setTypeSourceData_Int(typeSourceData);
-        initNotepad();
     }
 
     private void setTypeSourceData_Int(TYPES_DATA typeSourceData) {
@@ -130,6 +132,7 @@ public class CardSourceImplement implements CardSource, Parcelable {
             case FILE_DATA:
                 break;
             case FIREBASE_DATA:
+
                 break;
             case DATABASE_DATA:
                 break;
@@ -167,6 +170,7 @@ public class CardSourceImplement implements CardSource, Parcelable {
     @Override
     public void setCardNote(int position, CardNote cardNote) {
         if (!deleteMode) {
+            notepad.setId(position, cardNote.getId());
             notepad.setName(position, cardNote.getName());
             notepad.setDescription(position, cardNote.getDescription());
             notepad.setText(position, cardNote.getText());
@@ -226,6 +230,10 @@ public class CardSourceImplement implements CardSource, Parcelable {
             case FILE_DATA:
                 break;
             case FIREBASE_DATA:
+                cardsSourceFirebase = new CardsSourceFirebaseImpl();
+                for (int i = 0; i < cardsSourceFirebase.size(); i++) {
+                    notepad.add(cardsSourceFirebase.getCardNoteFirebase(i));
+                }
                 break;
             case DATABASE_DATA:
                 break;
@@ -244,6 +252,7 @@ public class CardSourceImplement implements CardSource, Parcelable {
             case FILE_DATA:
                 break;
             case FIREBASE_DATA:
+                cardsSourceFirebase.deleteCardNoteFirebase(position);
                 break;
             case DATABASE_DATA:
                 break;

@@ -71,9 +71,9 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
         recyclerView.setAdapter(listNotesAdapter);
 
         // Восстановление отображения содержимого просматриваемой заметки до удаления другой заметки через контекстное меню
-        int oldActiveNoteIndexBeforeDelete = mainActivity.getCardSourceImplement().getOldActiveNoteIndexBeforDelete();
+        int oldActiveNoteIndexBeforeDelete = mainActivity.getCardSourceImplement().getOldActiveNoteIndexBeforeDelete();
         if (oldActiveNoteIndexBeforeDelete > 0) {
-            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
             // Загрузка фрагмента c текстом TextFragment
             requireActivity()
                     .getSupportFragmentManager()
@@ -195,14 +195,14 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                     if (oldActiveNoteIndex != position) {
                         if (oldActiveNoteIndex > position) {
                             oldActiveNoteIndex--;
-                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(oldActiveNoteIndex);
+                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(oldActiveNoteIndex);
                         } else {
-                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(oldActiveNoteIndex);
+                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(oldActiveNoteIndex);
                         }
                         mainActivity.getCardSourceImplement().setActiveNoteIndex(oldActiveNoteIndex);
                     } else {
                         mainActivity.getCardSourceImplement().setActiveNoteIndex(0);
-                        mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+                        mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
                         // Отображение пустого текстового поля
                         mainActivity.getCardSourceImplement().setDeleteMode(true);
                         requireActivity()
@@ -221,7 +221,7 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                     Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
 
                     mainActivity.getCardSourceImplement().setActiveNoteIndex(0);
-                    mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforDelete(0);
+                    mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
                     updateListNotes();
                 }
                 break;

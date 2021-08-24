@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import ru.geekbrains.lessions2345.notepadonfragments.logic.CardNote;
 import ru.geekbrains.lessions2345.notepadonfragments.model.CONSTANTS;
 import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
@@ -26,6 +27,8 @@ public class Notepad implements Parcelable {
     // Начальный размер массива
     private final int START_SIZE_INTARRAYS = CONSTANTS.DELTA_CHANGE_INT_ARRAYS;
 
+    // Список id заметок
+    private ArrayList<String> id;
     // Список имен заметок
     private ArrayList<String> name;
     // Список кратких описаний заметок
@@ -40,6 +43,8 @@ public class Notepad implements Parcelable {
     private int[] dateDay;
 
     public Notepad() {
+        id = new ArrayList<String>();
+        id.add("");
         name = new ArrayList<String>();
         name.add(CONSTANTS.NAME_EMPTY_NOTE_ADD);
         description = new ArrayList<String>();
@@ -78,7 +83,7 @@ public class Notepad implements Parcelable {
         return name.size() - 1;
     }
 
-    // Добавить новый элемент
+    // Добавить новый элемент в виде имени и описания заметки
     public void add(String newName, String newDescription) {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int numberCurElement = name.size();
@@ -96,6 +101,7 @@ public class Notepad implements Parcelable {
         } else {
             description.add(newDescription);
         }
+        id.add("");
         text.add("");
         // Проверка на превышение размера списков над размерами массивов
         if (numberCurElement < dateYear.length) {
@@ -124,6 +130,7 @@ public class Notepad implements Parcelable {
             dateDay[numberCurElement] = calendar.get(Calendar.DAY_OF_MONTH);
         }
         // Ранжирование заметок: последняя заметка становится первой, а первая заметка - последней
+        String firstId = id.get(getNumberElements());
         String firstName = name.get(getNumberElements());
         String firstDescription = description.get(getNumberElements());
         String firstText = text.get(getNumberElements());
@@ -131,6 +138,7 @@ public class Notepad implements Parcelable {
         int firstDateMonth = dateMonth[getNumberElements()];
         int firstDateDay = dateDay[getNumberElements()];
         for (int i = getNumberElements() - 1; i > 0; i--) {
+            id.set(i + 1, id.get(i));
             name.set(i + 1, name.get(i));
             description.set(i + 1, description.get(i));
             text.set(i + 1, text.get(i));
@@ -138,6 +146,66 @@ public class Notepad implements Parcelable {
             dateMonth[i + 1] = dateMonth[i];
             dateDay[i + 1] = dateDay[i];
         }
+        id.set(1, firstId);
+        name.set(1, firstName);
+        description.set(1, firstDescription);
+        text.set(1, firstText);
+        dateYear[1] = firstDateYear;
+        dateMonth[1] = firstDateMonth;
+        dateDay[1] = firstDateDay;
+    }
+
+    // Добавить новый элемент в виде каточки CardNote
+    public void add(CardNote newCardNote) {
+        int numberCurElement = name.size();
+        id.add(newCardNote.getId());
+        name.add(newCardNote.getName());
+        description.add(newCardNote.getDescription());
+        text.add(newCardNote.getText());
+        // Проверка на превышение размера списков над размерами массивов
+        if (numberCurElement < dateYear.length) {
+            dateYear[numberCurElement] = newCardNote.getDateYear();
+            dateMonth[numberCurElement] = newCardNote.getDateMonth();
+            dateDay[numberCurElement] = newCardNote.getDateDay();
+        } else {
+            int[] tempArrayYear = new int[dateYear.length];
+            int[] tempArrayMonth = new int[dateYear.length];
+            int[] tempArrayDay = new int[dateYear.length];
+            for (int i = 0; i < dateYear.length; i++) {
+                tempArrayYear[i] = dateYear[i];
+                tempArrayMonth[i] = dateMonth[i];
+                tempArrayDay[i] = dateDay[i];
+            }
+            dateYear = new int[numberCurElement + CONSTANTS.DELTA_CHANGE_INT_ARRAYS];
+            dateMonth = new int[numberCurElement + CONSTANTS.DELTA_CHANGE_INT_ARRAYS];
+            dateDay = new int[numberCurElement + CONSTANTS.DELTA_CHANGE_INT_ARRAYS];
+            for (int i = 0; i < tempArrayYear.length; i++) {
+                dateYear[i] = tempArrayYear[i];
+                dateMonth[i] = tempArrayMonth[i];
+                dateDay[i] = tempArrayDay[i];
+            }
+            dateYear[numberCurElement] = newCardNote.getDateYear();
+            dateMonth[numberCurElement] = newCardNote.getDateMonth();
+            dateDay[numberCurElement] = newCardNote.getDateDay();
+        }
+        // Ранжирование заметок: последняя заметка становится первой, а первая заметка - последней
+        String firstId = id.get(getNumberElements());
+        String firstName = name.get(getNumberElements());
+        String firstDescription = description.get(getNumberElements());
+        String firstText = text.get(getNumberElements());
+        int firstDateYear = dateYear[getNumberElements()];
+        int firstDateMonth = dateMonth[getNumberElements()];
+        int firstDateDay = dateDay[getNumberElements()];
+        for (int i = getNumberElements() - 1; i > 0; i--) {
+            id.set(i + 1, id.get(i));
+            name.set(i + 1, name.get(i));
+            description.set(i + 1, description.get(i));
+            text.set(i + 1, text.get(i));
+            dateYear[i + 1] = dateYear[i];
+            dateMonth[i + 1] = dateMonth[i];
+            dateDay[i + 1] = dateDay[i];
+        }
+        id.set(1, firstId);
         name.set(1, firstName);
         description.set(1, firstDescription);
         text.set(1, firstText);
@@ -149,6 +217,7 @@ public class Notepad implements Parcelable {
     // Удалить запись
     public void remove(int index) {
         if (index > 0) {
+            id.remove(index);
             name.remove(index);
             description.remove(index);
             text.remove(index);
@@ -292,6 +361,22 @@ public class Notepad implements Parcelable {
         }
     }
 
+    // Получение id заметки
+    public String getId(int index) {
+        if ((index > 0) && (index <= getNumberElements())) {
+            return id.get(index);
+        } else {
+            return "";
+        }
+    }
+
+    // Установка id заметке
+    public void setId(int index, String newId) {
+        if ((index > 0) && (index <= getNumberElements())) {
+            id.set(index, newId);
+        }
+    }
+
     // МЕТОДЫ ДЛЯ ПЕРЕДАЧИ КЛАССА
     public static Creator<Notepad> getCREATOR() {
         return CREATOR;
@@ -299,6 +384,7 @@ public class Notepad implements Parcelable {
 
     // Методы для передачи класса
     protected Notepad(Parcel in) {
+        id = in.createStringArrayList();
         name = in.createStringArrayList();
         description = in.createStringArrayList();
         text = in.createStringArrayList();
@@ -309,6 +395,7 @@ public class Notepad implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringList(id);
         dest.writeStringList(name);
         dest.writeStringList(description);
         dest.writeStringList(text);

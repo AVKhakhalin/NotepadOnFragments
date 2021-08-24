@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 public class CardNote implements Parcelable {
 
+    // Id заметки
+    private String id;
     // Имя заметки
     private String name;
     // Краткое описание заметки
@@ -27,11 +29,20 @@ public class CardNote implements Parcelable {
         this.dateDay = dateDay;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getDate() {
         return String.format("%s.%s.%d", (dateDay < 10 ? "0" : "") + String.valueOf(dateDay), (dateMonth < 10 ? "0" : "") + String.valueOf(dateMonth), dateYear);
     }
 
     protected CardNote(Parcel in) {
+        id = in.readString();
         name = in.readString();
         description = in.readString();
         text = in.readString();
@@ -107,6 +118,7 @@ public class CardNote implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeString(description);
         dest.writeString(text);
