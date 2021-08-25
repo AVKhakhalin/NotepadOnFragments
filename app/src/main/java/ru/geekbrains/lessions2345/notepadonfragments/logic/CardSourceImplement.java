@@ -2,12 +2,14 @@ package ru.geekbrains.lessions2345.notepadonfragments.logic;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.TimeZone;
 
 import ru.geekbrains.lessions2345.notepadonfragments.logic.domain.Notepad;
 import ru.geekbrains.lessions2345.notepadonfragments.model.TYPES_DATA;
+import ru.geekbrains.lessions2345.notepadonfragments.ui.MainActivity;
 
 public class CardSourceImplement implements CardSource, Parcelable {
     private TYPES_DATA typeSourceData;
@@ -18,9 +20,11 @@ public class CardSourceImplement implements CardSource, Parcelable {
     private int oldActiveNoteIndexBeforeDelete = 0;
 
     private CardsSourceFirebaseImpl cardsSourceFirebase;
+    private MainActivity mainActivity;
 
-    public CardSourceImplement(TYPES_DATA typeSourceData) {
+    public CardSourceImplement(TYPES_DATA typeSourceData, MainActivity mainActivity) {
         this.typeSourceData = typeSourceData;
+        this.mainActivity = mainActivity;
         setTypeSourceData_Int(typeSourceData);
         initNotepad();
     }
@@ -37,8 +41,8 @@ public class CardSourceImplement implements CardSource, Parcelable {
         return activeNoteIndex;
     }
 
-    public void setActiveNoteIndex(int activeNoteIndes) {
-        this.activeNoteIndex = activeNoteIndes;
+    public void setActiveNoteIndex(int activeNoteIndex) {
+        this.activeNoteIndex = activeNoteIndex;
     }
 
     private void setTypeSourceData_Int(TYPES_DATA typeSourceData) {
@@ -195,9 +199,17 @@ public class CardSourceImplement implements CardSource, Parcelable {
                 break;
             case FIREBASE_DATA:
                 cardsSourceFirebase = new CardsSourceFirebaseImpl();
-                for (int i = 0; i < cardsSourceFirebase.size(); i++) {
-                    notepad.add(cardsSourceFirebase.getCardNoteFirebase(i));
-                }
+                cardsSourceFirebase.init(new CardSourceResponse() {
+                    @Override
+                    public void initialized(CardSource cardsSource) {
+                        int numberFirebaseCards = cardsSource.size();
+                        for (int i = 0; i < numberFirebaseCards; i++) {
+                            notepad.add(cardsSource.getCardNote(i));
+                        }
+                        mainActivity.recreate();
+                        Toast.makeText(mainActivity, String. valueOf("Загружено из облачной базы данных заметок: " + numberFirebaseCards), Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
             case DATABASE_DATA:
                 break;
@@ -209,20 +221,7 @@ public class CardSourceImplement implements CardSource, Parcelable {
     // Удаление карточки
     @Override
     public void removeCardNote(int position) {
-        switch (typeSourceData) {
-            case TEST_DATA:
-                notepad.remove(position);
-                break;
-            case FILE_DATA:
-                break;
-            case FIREBASE_DATA:
-                cardsSourceFirebase.deleteCardNoteFirebase(position);
-                break;
-            case DATABASE_DATA:
-                break;
-            default:
-                break;
-        }
+        notepad.remove(position);
     }
 
 

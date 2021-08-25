@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private CONSTANTS constants = new CONSTANTS();
     private TYPES_DATA typeSourceData = TYPES_DATA.FIREBASE_DATA;
 
+    //    Нужно для тестовой записи в облачную базу данных
 //    CardsSourceFirebaseImpl cardsSourceFirebase = new CardsSourceFirebaseImpl();
 
     @Override
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             cardSourceImplement = savedInstanceState.getParcelable(constants.KEY_CARD_SOURCE_IMPLEMENT);
         } else {
             // Инициализация класса - временного хранилища всех созданных к данному моменту заметок
-            cardSourceImplement = new CardSourceImplement(typeSourceData);
+            cardSourceImplement = new CardSourceImplement(typeSourceData, this);
         }
 
         // Отображение фрагмента со списком заметок
@@ -154,10 +155,20 @@ public class MainActivity extends AppCompatActivity {
             showEmptyTextFragment();
             return true;
         } else if (itemId == R.id.action_save) {
-            Toast.makeText(this, "Заметки сохранены в Firestore", Toast.LENGTH_SHORT).show();
+            // Удаление скачанных из базы данных заметок
+            if (typeSourceData == TYPES_DATA.FIREBASE_DATA) {
+                int numberFirebaseStoredNotes = cardSourceImplement.getCardsSourceFirebase().size();
+                if (numberFirebaseStoredNotes > 0) {
+                    for (int i = 0; i < numberFirebaseStoredNotes; i++) {
+                        cardSourceImplement.getCardsSourceFirebase().deleteCardNoteFirebase(0);
+                    }
+                }
+            }
+            // Сохранение в базу данных вновь созданных и отредактированных скачанных заметок
             for (int i = 1; i <= cardSourceImplement.size(); i++) {
                 cardSourceImplement.getCardsSourceFirebase().addCardNoteFirebase(cardSourceImplement.getCardNote(i));
             }
+            Toast.makeText(this, "Заметки сохранены в Firebase", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.action_delete) {
             cardSourceImplement.setDeleteMode(true);

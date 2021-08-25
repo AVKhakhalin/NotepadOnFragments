@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class CardsSourceFirebaseImpl implements CardSource {
 
     private static final String CARDS_COLLECTION = "cards";
     private static final String TAG = "[CardsSourceFirebaseImpl]";
+    CardNote cardData;
 
     // База данных Firestore
     private FirebaseFirestore store = FirebaseFirestore.getInstance();
@@ -38,7 +40,7 @@ public class CardsSourceFirebaseImpl implements CardSource {
 
     public CardSource init(final CardSourceResponse cardsSourceResponse) {
         // Получить всю коллекцию отсортированную по полю "год"
-        collection.orderBy(CardNoteMapping.Fields.YEAR, Query.Direction.DESCENDING).get()
+        collection.orderBy(CardNoteMapping.Fields.YEAR, Query.Direction.ASCENDING).get(Source.SERVER)
             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 // При удачном считывании данных загрузим список карточек
                 @Override
@@ -48,7 +50,8 @@ public class CardsSourceFirebaseImpl implements CardSource {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String, Object> doc = document.getData();
                             String id = document.getId();
-                            CardNote cardData = CardNoteMapping.toCardNote(id, doc);
+//                            CardNote cardData = CardNoteMapping.toCardNote(id, doc);
+                            cardData = CardNoteMapping.toCardNote(id, doc);
                             cardsData.add(cardData);
                         }
                         Log.d(TAG, "success " + cardsData.size() + " qnt");
@@ -110,7 +113,7 @@ public class CardsSourceFirebaseImpl implements CardSource {
 
     @Override
     public CardNote getCardNote(int position) {
-        return null;
+        return cardsData.get(position);
     }
 
     @Override

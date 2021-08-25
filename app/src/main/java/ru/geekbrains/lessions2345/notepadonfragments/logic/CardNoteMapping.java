@@ -8,7 +8,7 @@ import java.util.Map;
 public class CardNoteMapping {
 
     public static class Fields{
-        public final static String NAME = "date";
+        public final static String NAME = "name";
         public final static String DESCRIPTION = "description";
         public final static String TEXT = "text";
         public final static String YEAR = "year";
@@ -21,9 +21,9 @@ public class CardNoteMapping {
                 (String) doc.get(Fields.NAME),
                 (String) doc.get(Fields.DESCRIPTION),
                 (String) doc.get(Fields.TEXT),
-                (int) doc.get(Fields.YEAR),
-                (int) doc.get(Fields.MONTH),
-                (int) doc.get(Fields.DAY));
+                Math.toIntExact((Long) doc.get(Fields.YEAR)),
+                Math.toIntExact((Long) doc.get(Fields.MONTH)),
+                Math.toIntExact((Long) doc.get(Fields.DAY)));
         answer.setId(id);
         return answer;
     }

@@ -76,10 +76,10 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
             mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
             // Загрузка фрагмента c текстом TextFragment
             requireActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.text_container, TextFragment.newInstance(oldActiveNoteIndexBeforeDelete, false))
-                    .commit();
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.text_container, TextFragment.newInstance(oldActiveNoteIndexBeforeDelete, false))
+                .commit();
         }
     }
 
