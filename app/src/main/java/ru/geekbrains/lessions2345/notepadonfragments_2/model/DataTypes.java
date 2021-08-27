@@ -1,7 +1,7 @@
 package ru.geekbrains.lessions2345.notepadonfragments_2.model;
 
 // Settings
-public enum Types_data {
+public enum DataTypes {
     // Тестовые данные (значение в SharedPreferences (int) 0)
     TEST_DATA,
     // Данные, сохранённые в файле на мобильном устройстве (значение в SharedPreferences (int) 1)

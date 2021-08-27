@@ -20,7 +20,7 @@ import com.google.android.material.navigation.NavigationView;
 import ru.geekbrains.lessions2345.notepadonfragments_2.R;
 import ru.geekbrains.lessions2345.notepadonfragments_2.logic.CardSourceImplement;
 import ru.geekbrains.lessions2345.notepadonfragments_2.model.Constants;
-import ru.geekbrains.lessions2345.notepadonfragments_2.model.Types_data;
+import ru.geekbrains.lessions2345.notepadonfragments_2.model.DataTypes;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Observer;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Publisher;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.PublisherGetter;
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
     private CardSourceImplement cardSourceImplement;
     private EditCardFragment editCardFragment;
     private Constants constants = new Constants();
-    private Types_data typeSourceData = Types_data.FIREBASE_DATA;
+    private DataTypes typeSourceData = DataTypes.FIREBASE_DATA;
     private Navigation navigation;
     private GoogleAuthoriseFragment googleAuthoriseFragment;
     private Publisher publisher = new Publisher();
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
             return true;
         } else if (itemId == R.id.action_save) {
             // Удаление скачанных из базы данных заметок
-            if (typeSourceData == Types_data.FIREBASE_DATA) {
+            if (typeSourceData == DataTypes.FIREBASE_DATA) {
                 int numberFirebaseStoredNotes = cardSourceImplement.getCardsSourceFirebase().size();
                 if (numberFirebaseStoredNotes > 0) {
                     for (int i = 0; i < numberFirebaseStoredNotes; i++) {
@@ -214,15 +214,15 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
     }
 
     // Сохранение настроек в SharedPreferences
-    private void saveSettings(Types_data typeSourceData) {
+    private void saveSettings(DataTypes typeSourceData) {
         SharedPreferences sharedPreferences = getSharedPreferences(constants.KEY_DATA_SETTINGS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         // Сохранение типа источника данных
-        if (typeSourceData == Types_data.FILE_DATA) {
+        if (typeSourceData == DataTypes.FILE_DATA) {
             editor.putInt(constants.KEY_DATA_SETTINGS, 1);
-        } else if (typeSourceData == Types_data.FIREBASE_DATA) {
+        } else if (typeSourceData == DataTypes.FIREBASE_DATA) {
             editor.putInt(constants.KEY_DATA_SETTINGS, 2);
-        } else if (typeSourceData == Types_data.DATABASE_DATA) {
+        } else if (typeSourceData == DataTypes.DATABASE_DATA) {
             editor.putInt(constants.KEY_DATA_SETTINGS, 3);
         } else {
             // Случай, когда typeSourceData == null или typeSourceData == DATA_SETTINGS.TEST_DATA
@@ -238,14 +238,14 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
         if (typeSourceData == null) {
             int timeSourceData = sharedPreferences.getInt(constants.KEY_DATA_SETTINGS, 0);
             if (timeSourceData == 1) {
-                typeSourceData = Types_data.FILE_DATA;
+                typeSourceData = DataTypes.FILE_DATA;
             } else if (timeSourceData == 2) {
-                typeSourceData = Types_data.FIREBASE_DATA;
+                typeSourceData = DataTypes.FIREBASE_DATA;
             } else if (timeSourceData == 3) {
-                typeSourceData = Types_data.DATABASE_DATA;
+                typeSourceData = DataTypes.DATABASE_DATA;
             } else {
                 // Случай, когда typeSourceData == null или typeSourceData == DATA_SETTINGS.TEST_DATA
-                typeSourceData = Types_data.TEST_DATA;
+                typeSourceData = DataTypes.TEST_DATA;
             }
             completeGoogleAuthorise = sharedPreferences.getBoolean(constants.KEY_GOOGLE_AUTHORISE, false);
         } else {

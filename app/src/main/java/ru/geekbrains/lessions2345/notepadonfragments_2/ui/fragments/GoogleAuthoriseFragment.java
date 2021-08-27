@@ -26,8 +26,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 
 import ru.geekbrains.lessions2345.notepadonfragments_2.R;
-import ru.geekbrains.lessions2345.notepadonfragments_2.logic.authorise.GoogleAuthorise;
-import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Observer;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Publisher;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;

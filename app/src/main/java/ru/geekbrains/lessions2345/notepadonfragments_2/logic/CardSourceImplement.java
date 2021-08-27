@@ -8,13 +8,12 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import ru.geekbrains.lessions2345.notepadonfragments_2.logic.domain.Notepad;
-import ru.geekbrains.lessions2345.notepadonfragments_2.model.Types_data;
-import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Observer;
+import ru.geekbrains.lessions2345.notepadonfragments_2.model.DataTypes;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Publisher;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;
 
 public class CardSourceImplement implements CardSource, Parcelable {
-    private Types_data typeSourceData;
+    private DataTypes typeSourceData;
     private int typeSourceData_int;
     private Notepad notepad = new Notepad();
     private int activeNoteIndex = 0;
@@ -25,7 +24,7 @@ public class CardSourceImplement implements CardSource, Parcelable {
     private MainActivity mainActivity;
     private Publisher publisher = new Publisher();
 
-    public CardSourceImplement(Types_data typeSourceData, MainActivity mainActivity) {
+    public CardSourceImplement(DataTypes typeSourceData, MainActivity mainActivity) {
         this.typeSourceData = typeSourceData;
         this.mainActivity = mainActivity;
         publisher = mainActivity.getPublisher();
@@ -49,7 +48,7 @@ public class CardSourceImplement implements CardSource, Parcelable {
         this.activeNoteIndex = activeNoteIndex;
     }
 
-    private void setTypeSourceData_Int(Types_data typeSourceData) {
+    private void setTypeSourceData_Int(DataTypes typeSourceData) {
         switch (typeSourceData) {
             case TEST_DATA:
                 typeSourceData_int = 0;
@@ -70,16 +69,16 @@ public class CardSourceImplement implements CardSource, Parcelable {
     private void setTypeSourceData(int typeSourceData_int) {
         switch (typeSourceData_int) {
             case 0:
-                typeSourceData = Types_data.TEST_DATA;
+                typeSourceData = DataTypes.TEST_DATA;
                 break;
             case 1:
-                typeSourceData = Types_data.FILE_DATA;
+                typeSourceData = DataTypes.FILE_DATA;
                 break;
             case 2:
-                typeSourceData = Types_data.FIREBASE_DATA;
+                typeSourceData = DataTypes.FIREBASE_DATA;
                 break;
             case 3:
-                typeSourceData = Types_data.DATABASE_DATA;
+                typeSourceData = DataTypes.DATABASE_DATA;
                 break;
             default:
         }
