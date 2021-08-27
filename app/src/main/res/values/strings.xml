@@ -20,4 +20,7 @@
     <string name="empty_text" />
     <string name="card_edit_field_data_title_text">Дата создания:</string>
     <string name="menu_action_show_card_note_text">Просмотр карты заметки</string>
+
+    <string name="sign_out">Выйти из учётной сесии Google</string>
+    <string name="continue_">Войти в приложение "Заметки"</string>
 </resources>
