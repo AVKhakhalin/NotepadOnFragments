@@ -210,7 +210,7 @@ public class CardSourceImplement implements CardSource, Parcelable {
                             notepad.add(cardsSource.getCardNote(i));
                         }
                         publisher.notifySingle(numberFirebaseCards);
-                        Toast.makeText(mainActivity, String. valueOf("Загружено из облачной базы данных заметок: " + numberFirebaseCards), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mainActivity, String.valueOf("Загружено из Firebase заметок: " + numberFirebaseCards), Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;

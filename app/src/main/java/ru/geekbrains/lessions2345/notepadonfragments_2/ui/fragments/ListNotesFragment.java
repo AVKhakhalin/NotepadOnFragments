@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +22,8 @@ import ru.geekbrains.lessions2345.notepadonfragments_2.R;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Publisher;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;
+import ru.geekbrains.lessions2345.notepadonfragments_2.ui.Navigation;
+import ru.geekbrains.lessions2345.notepadonfragments_2.ui.NavigationGetter;
 
 public class ListNotesFragment extends Fragment implements ListNotesFragmentOnClickListener {
 
@@ -36,6 +37,7 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
     private ListNotesAdapter listNotesAdapter;
     private EditCardFragment editCardFragment;
 
+    private Navigation navigation;
     private Publisher publisher = new Publisher();
 
     public static ListNotesFragment newInstance() {
@@ -46,6 +48,8 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        // Получаем навигатор
+        navigation = ((NavigationGetter) context).getNavigation();
         // Получаем паблишер, чтобы передать с ним в MainActivity результат выбора пользователя по удалению заметки
         publisher = ((PublisherGetter) context).getPublisher();
     }
@@ -87,11 +91,12 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
         if (oldActiveNoteIndexBeforeDelete > 0) {
             mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
             // Загрузка фрагмента c текстом TextFragment
-            requireActivity()
+            navigation.addFragment(TextFragment.newInstance(oldActiveNoteIndexBeforeDelete, false), R.id.text_container, false);
+/*            requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.text_container, TextFragment.newInstance(oldActiveNoteIndexBeforeDelete, false))
-                .commit();
+                .commit();*/
         }
     }
 
@@ -205,19 +210,25 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
 
     // Отображение фрагмента с обновлённым списком заметок
     private void updateListNotes() {
+        navigation.addFragment(ListNotesFragment.newInstance(), R.id.list_container, false);
+/*
         requireActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.list_container, ListNotesFragment.newInstance())
-                .commit();
+            .getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.list_container, ListNotesFragment.newInstance())
+            .commit();
+*/
     }
 
     // Отображение фрагмента с текстом заметки
     private void updateTextNote(int index) {
+        navigation.addFragment(TextFragment.newInstance(index, true), R.id.text_container, false);
+/*
         requireActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.text_container, TextFragment.newInstance(index, true))
-                .commit();
+            .getSupportFragmentManager()
+            .beginTransaction()
+            .replace(R.id.text_container, TextFragment.newInstance(index, true))
+            .commit();
+*/
     }
 }

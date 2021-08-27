@@ -1,6 +1,7 @@
 package ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments;
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -19,6 +22,8 @@ import ru.geekbrains.lessions2345.notepadonfragments_2.R;
 import ru.geekbrains.lessions2345.notepadonfragments_2.logic.CardNote;
 import ru.geekbrains.lessions2345.notepadonfragments_2.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;
+import ru.geekbrains.lessions2345.notepadonfragments_2.ui.Navigation;
+import ru.geekbrains.lessions2345.notepadonfragments_2.ui.NavigationGetter;
 
 public class EditCardFragment extends DialogFragment implements OnClickListener {
 
@@ -29,6 +34,15 @@ public class EditCardFragment extends DialogFragment implements OnClickListener 
     private int activeIndex = 0;
     private Button buttonOk;
     private TextView textView_title;
+    private Navigation navigation;
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        // Получаем навигатор
+        navigation = ((NavigationGetter) context).getNavigation();
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_card, null);
@@ -90,11 +104,12 @@ public class EditCardFragment extends DialogFragment implements OnClickListener 
             mainActivity.getCardSourceImplement().setCardNote(activeIndex, this.datePicker.getYear(), this.datePicker.getMonth() + 1, this.datePicker.getDayOfMonth());
         }
         // Перезапуск фрагмента со списком для отображения новой заметки
-        mainActivity
+        navigation.addFragment(ListNotesFragment.newInstance(), R.id.list_container, false);
+/*        mainActivity
             .getSupportFragmentManager()
             .beginTransaction()
             .replace(R.id.list_container, ListNotesFragment.newInstance())
-            .commit();
+            .commit();*/
         dismiss();
     }
 }

@@ -9,23 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import ru.geekbrains.lessions2345.notepadonfragments_2.R;
-import ru.geekbrains.lessions2345.notepadonfragments_2.logic.CardNote;
-import ru.geekbrains.lessions2345.notepadonfragments_2.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments_2.model.DeleteAnswersTypes;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Publisher;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.PublisherGetter;
-import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;
 
 public class DeleteFragment extends DialogFragment implements OnClickListener {
 

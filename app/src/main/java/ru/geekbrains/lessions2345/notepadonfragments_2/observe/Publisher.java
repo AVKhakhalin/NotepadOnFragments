@@ -49,5 +49,4 @@ public class Publisher {
             observer.updateUserChooseDeleteFileFromContextMenu(userDecision, indexChoosedNoteInContextMenu);
         }
     }
-
 }

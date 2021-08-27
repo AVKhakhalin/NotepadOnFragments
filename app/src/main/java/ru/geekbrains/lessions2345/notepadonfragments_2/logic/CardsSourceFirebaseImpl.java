@@ -38,32 +38,32 @@ public class CardsSourceFirebaseImpl implements CardSource {
     public CardSource init(final CardSourceResponse cardsSourceResponse) {
         // Получить всю коллекцию отсортированную по полю "год"
         collection.orderBy(CardNoteMapping.Fields.YEAR, Query.Direction.ASCENDING).get(Source.SERVER)
-            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                // При удачном считывании данных загрузим список карточек
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        cardsData = new ArrayList<CardNote>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Map<String, Object> doc = document.getData();
-                            String id = document.getId();
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    // При удачном считывании данных загрузим список карточек
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            cardsData = new ArrayList<CardNote>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Map<String, Object> doc = document.getData();
+                                String id = document.getId();
 //                            CardNote cardData = CardNoteMapping.toCardNote(id, doc);
-                            cardData = CardNoteMapping.toCardNote(id, doc);
-                            cardsData.add(cardData);
+                                cardData = CardNoteMapping.toCardNote(id, doc);
+                                cardsData.add(cardData);
+                            }
+                            Log.d(TAG, "success " + cardsData.size() + " qnt");
+                            cardsSourceResponse.initialized(CardsSourceFirebaseImpl.this);
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
                         }
-                        Log.d(TAG, "success " + cardsData.size() + " qnt");
-                        cardsSourceResponse.initialized(CardsSourceFirebaseImpl.this);
-                    } else {
-                        Log.d(TAG, "get failed with ", task.getException());
                     }
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "get failed with ", e);
-            }
-        });
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "get failed with ", e);
+                    }
+                });
         return this;
     }
 
@@ -73,7 +73,7 @@ public class CardsSourceFirebaseImpl implements CardSource {
 
     @Override
     public int size() {
-        if (cardsData == null){
+        if (cardsData == null) {
             return 0;
         }
         return cardsData.size();
@@ -102,7 +102,7 @@ public class CardsSourceFirebaseImpl implements CardSource {
     }
 
     public void clearCardNoteFirebase() {
-        for (CardNote cardData: cardsData) {
+        for (CardNote cardData : cardsData) {
             collection.document(cardData.getId()).delete();
         }
         cardsData = new ArrayList<CardNote>();

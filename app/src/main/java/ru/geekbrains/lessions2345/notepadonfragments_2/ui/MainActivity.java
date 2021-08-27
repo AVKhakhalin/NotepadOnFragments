@@ -30,13 +30,13 @@ import ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments.EditCardFrag
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments.GoogleAuthoriseFragment;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments.ListNotesFragment;
 
-public class MainActivity extends AppCompatActivity implements PublisherGetter, Observer {
+public class MainActivity extends AppCompatActivity implements PublisherGetter, Observer, NavigationGetter {
 
     private CardSourceImplement cardSourceImplement;
     private EditCardFragment editCardFragment;
     private Constants constants = new Constants();
     private DataTypes typeSourceData = DataTypes.FIREBASE_DATA;
-    private Navigation navigation;
+    private Navigation navigation = new Navigation(getSupportFragmentManager());
     private GoogleAuthoriseFragment googleAuthoriseFragment;
     private Publisher publisher = new Publisher();
     private boolean completeGoogleAuthorise = false;
@@ -255,24 +255,31 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
 
     // Отображение пустого текстового поля
     private void showEmptyTextFragment() {
+        navigation.addFragment(ListNotesFragment.newInstance(), R.id.text_container, false);
+/*
         getSupportFragmentManager()
-            .beginTransaction()
-            .replace(R.id.text_container, new Fragment())
-            .commitNow();
+                .beginTransaction()
+                .replace(R.id.text_container, new Fragment())
+                .commitNow();
+*/
     }
 
     // Отображение фрагмента со списком заметок
     private void showListNotes() {
-        getSupportFragmentManager()
+        navigation.addFragment(ListNotesFragment.newInstance(), R.id.list_container, false);
+/*        getSupportFragmentManager()
             .beginTransaction()
             .replace(R.id.list_container, ListNotesFragment.newInstance())
             .commit();
+*/
     }
 
+    // Метод для получения класса Navigation
     public Navigation getNavigation() {
         return navigation;
     }
 
+    // Метод для получения класса Publisher
     public Publisher getPublisher() {
         return publisher;
     }
@@ -301,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
             // Отображение пустого текстового поля
             showEmptyTextFragment();
             cardSourceImplement.setDeleteMode(false);
-            String deletedNoteName = "\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getName() + "\" (\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getDescription() + "\")" ;
+            String deletedNoteName = "\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getName() + "\" (\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getDescription() + "\")";
             cardSourceImplement.removeCardNote(cardSourceImplement.getActiveNoteIndex());
             cardSourceImplement.setActiveNoteIndex(0);
             // Отображение обновлённого фрагмента со списком заметок
@@ -335,10 +342,11 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
                 getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
                 // Отображение пустого текстового поля
                 getCardSourceImplement().setDeleteMode(true);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.text_container, new Fragment())
-                        .commitNow();
+                showEmptyTextFragment();
+/*                getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.text_container, new Fragment())
+                    .commitNow();*/
                 getCardSourceImplement().setDeleteMode(false);
             }
             showListNotes();
@@ -355,6 +363,8 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
         }
     }
 
+    // Этот метод добавлен, чтобы можно было протестировать аутентификацию Google
+    // Он является искусственным костылём для проверки работоспособности программы. Ведь достаточно только один раз пройти проверку
     @Override
     protected void onDestroy() {
         super.onDestroy();

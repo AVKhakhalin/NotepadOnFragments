@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class CardNoteMapping {
 
-    public static class Fields{
+    public static class Fields {
         public final static String NAME = "name";
         public final static String DESCRIPTION = "description";
         public final static String TEXT = "text";
@@ -26,7 +26,7 @@ public class CardNoteMapping {
         return answer;
     }
 
-    public static Map<String, Object> toDocument(CardNote cardData){
+    public static Map<String, Object> toDocument(CardNote cardData) {
         Map<String, Object> answer = new HashMap<>();
         answer.put(Fields.NAME, cardData.getName());
         answer.put(Fields.DESCRIPTION, cardData.getDescription());
