@@ -24,4 +24,6 @@
     <string name="sign_out">Выйти из учётной сесии Google</string>
     <string name="continue_">Войти в приложение "Заметки"</string>
     <string name="google_authorise_email_text">e-mail</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
 </resources>

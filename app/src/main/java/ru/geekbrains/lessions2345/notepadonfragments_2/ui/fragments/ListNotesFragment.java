@@ -1,6 +1,7 @@
 package ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Calendar;
 
 import ru.geekbrains.lessions2345.notepadonfragments_2.R;
+import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Publisher;
+import ru.geekbrains.lessions2345.notepadonfragments_2.observe.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;
 
 public class ListNotesFragment extends Fragment implements ListNotesFragmentOnClickListener {
@@ -33,9 +36,18 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
     private ListNotesAdapter listNotesAdapter;
     private EditCardFragment editCardFragment;
 
+    private Publisher publisher = new Publisher();
+
     public static ListNotesFragment newInstance() {
         ListNotesFragment listNotesFragment = new ListNotesFragment();
         return listNotesFragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        // Получаем паблишер, чтобы передать с ним в MainActivity результат выбора пользователя по удалению заметки
+        publisher = ((PublisherGetter) context).getPublisher();
     }
 
     @Override
@@ -183,47 +195,9 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                 break;
             case R.id.context_menu_action_delete_card:
                 // Удаление карточки через контекстное меню
-                int oldActiveNoteIndex = mainActivity.getCardSourceImplement().getActiveNoteIndex();
-                if (oldActiveNoteIndex > 0) {
-                    mainActivity.getCardSourceImplement().setActiveNoteIndex(position);
-                    // Удаление заметки
-                    String deletedNoteName = "\"" + mainActivity.getCardSourceImplement().getCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + mainActivity.getCardSourceImplement().getCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")";
-                    ((MainActivity) getActivity()).getCardSourceImplement().removeCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex());
-                    Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
-
-                    // Отображение обновлённой информации
-                    if (oldActiveNoteIndex != position) {
-                        if (oldActiveNoteIndex > position) {
-                            oldActiveNoteIndex--;
-                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(oldActiveNoteIndex);
-                        } else {
-                            mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(oldActiveNoteIndex);
-                        }
-                        mainActivity.getCardSourceImplement().setActiveNoteIndex(oldActiveNoteIndex);
-                    } else {
-                        mainActivity.getCardSourceImplement().setActiveNoteIndex(0);
-                        mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
-                        // Отображение пустого текстового поля
-                        mainActivity.getCardSourceImplement().setDeleteMode(true);
-                        requireActivity()
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.text_container, new Fragment())
-                                .commitNow();
-                        mainActivity.getCardSourceImplement().setDeleteMode(false);
-                    }
-                    updateListNotes();
-                } else if ((oldActiveNoteIndex == 0) && (mainActivity.getCardSourceImplement().size() > 0)) {
-                    mainActivity.getCardSourceImplement().setActiveNoteIndex(position);
-                    // Удаление заметки
-                    String deletedNoteName = "\"" + mainActivity.getCardSourceImplement().getCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + mainActivity.getCardSourceImplement().getCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")";
-                    mainActivity.getCardSourceImplement().removeCardNote(mainActivity.getCardSourceImplement().getActiveNoteIndex());
-                    Toast.makeText(getContext(), "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
-
-                    mainActivity.getCardSourceImplement().setActiveNoteIndex(0);
-                    mainActivity.getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
-                    updateListNotes();
-                }
+                // Отображение диалогового фрагмента DeleteFragment с подтверждением удаления заметки из контекстного меню
+                DeleteFragment deleteFragment = new DeleteFragment().newInstance(true, position);
+                deleteFragment.show(requireActivity().getFragmentManager(), "");
                 break;
         }
         return super.onContextItemSelected(item);

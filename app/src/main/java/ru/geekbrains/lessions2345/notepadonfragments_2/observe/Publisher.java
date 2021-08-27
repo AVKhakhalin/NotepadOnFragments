@@ -3,6 +3,8 @@ package ru.geekbrains.lessions2345.notepadonfragments_2.observe;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.geekbrains.lessions2345.notepadonfragments_2.model.DeleteAnswersTypes;
+
 public class Publisher {
     private List<Observer> observers;   // Все обозреватели
 
@@ -24,7 +26,6 @@ public class Publisher {
     public void notifySingle(Boolean completeGoogleAuthorise) {
         for (Observer observer : observers) {
             observer.completeGoogleAuthorise(completeGoogleAuthorise);
-            unsubscribe(observer);
         }
     }
 
@@ -32,7 +33,21 @@ public class Publisher {
     public void notifySingle(int numberDownloadedNotes) {
         for (Observer observer : observers) {
             observer.updateDatesFromFireBase(numberDownloadedNotes);
-            unsubscribe(observer);
         }
     }
+
+    // Разослать событие о выборе пользователя при удалении файла из меню AppBar (нужно удалить только открытую заметку)
+    public void notifySingle(DeleteAnswersTypes userDecision) {
+        for (Observer observer : observers) {
+            observer.updateUserChooseDeleteFile(userDecision);
+        }
+    }
+
+    // Разослать событие о выборе пользователя при удалении файла из контекстного меню списка (нужно удалить выбранную заметку и отследить, чтобы текущая просматриваеая заметка не изменилась)
+    public void notifySingle(DeleteAnswersTypes userDecision, int indexChoosedNoteInContextMenu) {
+        for (Observer observer : observers) {
+            observer.updateUserChooseDeleteFileFromContextMenu(userDecision, indexChoosedNoteInContextMenu);
+        }
+    }
+
 }

@@ -21,9 +21,11 @@ import ru.geekbrains.lessions2345.notepadonfragments_2.R;
 import ru.geekbrains.lessions2345.notepadonfragments_2.logic.CardSourceImplement;
 import ru.geekbrains.lessions2345.notepadonfragments_2.model.Constants;
 import ru.geekbrains.lessions2345.notepadonfragments_2.model.DataTypes;
+import ru.geekbrains.lessions2345.notepadonfragments_2.model.DeleteAnswersTypes;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Observer;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Publisher;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.PublisherGetter;
+import ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments.DeleteFragment;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments.EditCardFragment;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments.GoogleAuthoriseFragment;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.fragments.ListNotesFragment;
@@ -38,9 +40,8 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
     private GoogleAuthoriseFragment googleAuthoriseFragment;
     private Publisher publisher = new Publisher();
     private boolean completeGoogleAuthorise = false;
-
-    //    Нужно для тестовой записи в облачную базу данных
-//    CardsSourceFirebaseImpl cardsSourceFirebase = new CardsSourceFirebaseImpl();
+    private DeleteAnswersTypes userDecision = DeleteAnswersTypes.UNKNOWN;
+    private DeleteFragment deleteFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,21 +186,19 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
             Toast.makeText(this, "Заметки сохранены в Firebase", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.action_delete) {
-            cardSourceImplement.setDeleteMode(true);
-            // Отображение пустого текстового поля
-            showEmptyTextFragment();
-            cardSourceImplement.setDeleteMode(false);
-            String deletedNoteName = "\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getName() + "\" (\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getDescription() + "\")" ;
-            cardSourceImplement.removeCardNote(cardSourceImplement.getActiveNoteIndex());
-            // Отображение фрагмента со списком заметок
-            showListNotes();
-            Toast.makeText(this, "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
+            // Отображение диалогового фрагмента DeleteFragment с подтверждением удаления заметки
+            if (getCardSourceImplement().getActiveNoteIndex() > 0) {
+                deleteFragment = new DeleteFragment();
+                deleteFragment.show(getFragmentManager(), "");
+            } else {
+                Toast.makeText(this, "Для удаления заметки её нужно сначала выбрать в списке слева.", Toast.LENGTH_SHORT).show();
+            }
             return true;
         } else if (itemId == R.id.action_filter) {
             Toast.makeText(this, "Фильтр вывода заметок", Toast.LENGTH_SHORT).show();
             return true;
         } else if (itemId == R.id.action_show_card) {
-//            Toast.makeText(this, "Посмотр/создание карты заметки", Toast.LENGTH_SHORT).show();
+            // Отображение диалогового фрагмента с просмотром/редактированием карточки заметки
             editCardFragment = new EditCardFragment();
             editCardFragment.show(getFragmentManager(), "");
             return true;
@@ -290,6 +289,68 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
     @Override
     public void updateDatesFromFireBase(int numberDownloadedNotes) {
         if (numberDownloadedNotes > 0) {
+            showListNotes();
+        }
+    }
+
+    @Override
+    public void updateUserChooseDeleteFile(DeleteAnswersTypes userDecision) {
+        this.userDecision = userDecision;
+        if (this.userDecision == DeleteAnswersTypes.YES) {
+            cardSourceImplement.setDeleteMode(true);
+            // Отображение пустого текстового поля
+            showEmptyTextFragment();
+            cardSourceImplement.setDeleteMode(false);
+            String deletedNoteName = "\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getName() + "\" (\"" + cardSourceImplement.getCardNote(cardSourceImplement.getActiveNoteIndex()).getDescription() + "\")" ;
+            cardSourceImplement.removeCardNote(cardSourceImplement.getActiveNoteIndex());
+            cardSourceImplement.setActiveNoteIndex(0);
+            // Отображение обновлённого фрагмента со списком заметок
+            showListNotes();
+            Toast.makeText(this, "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
+        }
+        this.userDecision = DeleteAnswersTypes.UNKNOWN;
+    }
+
+    @Override
+    public void updateUserChooseDeleteFileFromContextMenu(DeleteAnswersTypes userDecision, int indexChoosedNoteInContextMenu) {
+        int oldActiveNoteIndex = getCardSourceImplement().getActiveNoteIndex();
+        if (oldActiveNoteIndex > 0) {
+            getCardSourceImplement().setActiveNoteIndex(indexChoosedNoteInContextMenu);
+            // Удаление заметки
+            String deletedNoteName = "\"" + getCardSourceImplement().getCardNote(getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + getCardSourceImplement().getCardNote(getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")";
+            getCardSourceImplement().removeCardNote(getCardSourceImplement().getActiveNoteIndex());
+            Toast.makeText(this, "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
+
+            // Отображение обновлённой информации
+            if (oldActiveNoteIndex != indexChoosedNoteInContextMenu) {
+                if (oldActiveNoteIndex > indexChoosedNoteInContextMenu) {
+                    oldActiveNoteIndex--;
+                    getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(oldActiveNoteIndex);
+                } else {
+                    getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(oldActiveNoteIndex);
+                }
+                getCardSourceImplement().setActiveNoteIndex(oldActiveNoteIndex);
+            } else {
+                getCardSourceImplement().setActiveNoteIndex(0);
+                getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
+                // Отображение пустого текстового поля
+                getCardSourceImplement().setDeleteMode(true);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.text_container, new Fragment())
+                        .commitNow();
+                getCardSourceImplement().setDeleteMode(false);
+            }
+            showListNotes();
+        } else if ((oldActiveNoteIndex == 0) && (getCardSourceImplement().size() > 0)) {
+            getCardSourceImplement().setActiveNoteIndex(indexChoosedNoteInContextMenu);
+            // Удаление заметки
+            String deletedNoteName = "\"" + getCardSourceImplement().getCardNote(getCardSourceImplement().getActiveNoteIndex()).getName() + "\" (\"" + getCardSourceImplement().getCardNote(getCardSourceImplement().getActiveNoteIndex()).getDescription() + "\")";
+            getCardSourceImplement().removeCardNote(getCardSourceImplement().getActiveNoteIndex());
+            Toast.makeText(this, "Заметка " + deletedNoteName + " удалена.", Toast.LENGTH_SHORT).show();
+
+            getCardSourceImplement().setActiveNoteIndex(0);
+            getCardSourceImplement().setOldActiveNoteIndexBeforeDelete(0);
             showListNotes();
         }
     }

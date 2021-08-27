@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/background_text_color"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/card_edit_text_margin"
+        android:gravity="center"
+        android:text="Вы действительно\nхотите удалить заметку?"
+        android:textColor="@color/gray_text"
+        android:textSize="@dimen/card_edit_text_size"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/fragment_delete_buttons_margin"
+            android:backgroundTint="@color/background_list_color"
+            android:text="@string/no"
+            android:textColor="@color/gray_text"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/fragment_delete_buttons_margin"
+            android:backgroundTint="@color/background_list_color"
+            android:text="@string/yes"
+            android:textColor="@color/gray_text"/>
+    </LinearLayout>
+</LinearLayout>

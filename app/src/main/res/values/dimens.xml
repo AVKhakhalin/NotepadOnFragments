@@ -12,4 +12,5 @@
     <dimen name="card_edit_land_buttons_margin_top">10dp</dimen>
     <dimen name="google_authorise_email_text_size">20sp</dimen>
     <dimen name="google_authorise_botton_marginbottom">8dp</dimen>
+    <dimen name="fragment_delete_buttons_margin">10dp</dimen>
 </resources>
