@@ -17,6 +17,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,8 @@ public class CardsSourceFirebaseImpl implements CardSource {
                                 Map<String, Object> doc = document.getData();
                                 String id = document.getId();
 //                            CardNote cardData = CardNoteMapping.toCardNote(id, doc);
-                                cardData = CardNoteMapping.toCardNote(id, doc);
+//                                cardData = CardNoteMapping.toCardNote(id, doc);
+                                cardData = CardNoteMapping.Fields.toCardNote(id, (HashMap<String, Object>) doc);
                                 cardsData.add(cardData);
                             }
                             Log.d(TAG, "success " + cardsData.size() + " qnt");
@@ -88,12 +90,14 @@ public class CardsSourceFirebaseImpl implements CardSource {
     public void updateCardNoteFirebase(int position, CardNote cardData) {
         String id = cardData.getId();
         // Изменить документ по идентификатору
-        collection.document(id).set(CardNoteMapping.toDocument(cardData));
+//        collection.document(id).set(CardNoteMapping.toDocument(cardData));
+        collection.document(id).set(CardNoteMapping.Fields.toDocument(cardData));
     }
 
     public void addCardNoteFirebase(final CardNote cardData) {
         // Добавить документ
-        collection.add(CardNoteMapping.toDocument(cardData)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//        collection.add(CardNoteMapping.toDocument(cardData)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        collection.add(CardNoteMapping.Fields.toDocument(cardData)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 cardData.setId(documentReference.getId());
