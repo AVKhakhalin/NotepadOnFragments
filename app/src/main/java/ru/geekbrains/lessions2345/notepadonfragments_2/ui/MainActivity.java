@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
 
     // Отображение пустого текстового поля
     private void showEmptyTextFragment() {
-        navigation.addFragment(ListNotesFragment.newInstance(), R.id.text_container, false);
+        navigation.addFragment(new Fragment(), R.id.text_container, false);
 /*
         getSupportFragmentManager()
                 .beginTransaction()
