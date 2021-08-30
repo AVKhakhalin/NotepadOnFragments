@@ -10,7 +10,7 @@ import java.util.TimeZone;
 import ru.geekbrains.lessions2345.notepadonfragments_2.logic.CardNote;
 import ru.geekbrains.lessions2345.notepadonfragments_2.model.Constants;
 
-public class Notepad implements Parcelable {
+public class NotepadOriginalJava implements Parcelable {
     /* ВАЖНО!!!
     Нулевой элемент всегда задан по-умолчанию!
     Поэтому работа с классом осуществляется с 1 элемента.
@@ -41,7 +41,7 @@ public class Notepad implements Parcelable {
     // Массив дней создания заметок
     private int[] dateDay;
 
-    public Notepad() {
+    public NotepadOriginalJava() {
         id = new ArrayList<String>();
         id.add("");
         name = new ArrayList<String>();
@@ -377,12 +377,12 @@ public class Notepad implements Parcelable {
     }
 
     // МЕТОДЫ ДЛЯ ПЕРЕДАЧИ КЛАССА
-    public static Creator<Notepad> getCREATOR() {
+    public static Creator<NotepadOriginalJava> getCREATOR() {
         return CREATOR;
     }
 
     // Методы для передачи класса
-    protected Notepad(Parcel in) {
+    protected NotepadOriginalJava(Parcel in) {
         id = in.createStringArrayList();
         name = in.createStringArrayList();
         description = in.createStringArrayList();
@@ -408,15 +408,15 @@ public class Notepad implements Parcelable {
         return 0;
     }
 
-    public static final Creator<Notepad> CREATOR = new Creator<Notepad>() {
+    public static final Creator<NotepadOriginalJava> CREATOR = new Creator<NotepadOriginalJava>() {
         @Override
-        public Notepad createFromParcel(Parcel in) {
-            return new Notepad(in);
+        public NotepadOriginalJava createFromParcel(Parcel in) {
+            return new NotepadOriginalJava(in);
         }
 
         @Override
-        public Notepad[] newArray(int size) {
-            return new Notepad[size];
+        public NotepadOriginalJava[] newArray(int size) {
+            return new NotepadOriginalJava[size];
         }
     };
 }

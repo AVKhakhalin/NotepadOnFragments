@@ -21,6 +21,7 @@ public class Navigation {
             fragmentTransaction.addToBackStack(null);
         }
         // Закрыть транзакцию
-        fragmentTransaction.commitNow();
+//        fragmentTransaction.commitNow();
+        fragmentTransaction.commit();
     }
 }
