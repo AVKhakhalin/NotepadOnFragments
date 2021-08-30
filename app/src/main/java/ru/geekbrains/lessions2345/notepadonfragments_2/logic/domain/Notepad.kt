@@ -392,11 +392,6 @@ class Notepad() : Parcelable {
         }
     }
 
-/*
-    override fun describeContents(): Int {
-        TODO("Not yet implemented")
-    }
-*/
     override fun describeContents() = 0
 
     companion object CREATOR : Parcelable.Creator<Notepad> {
