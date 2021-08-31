@@ -1,5 +1,6 @@
 package ru.geekbrains.lessions2345.notepadonfragments_2.model
 
+// Типы исходных данных
 enum class DataTypes {
     // Тестовые данные (значение в SharedPreferences (int) 0)
     TEST_DATA,

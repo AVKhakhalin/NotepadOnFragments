@@ -1,6 +1,6 @@
 package ru.geekbrains.lessions2345.notepadonfragments_2.model;
 
-// Settings
+// Типы исходных данных
 public enum DataTypesOriginalJava {
     // Тестовые данные (значение в SharedPreferences (int) 0)
     TEST_DATA,
