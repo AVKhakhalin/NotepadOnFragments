@@ -2,7 +2,7 @@ package ru.geekbrains.lessions2345.notepadonfragments_2.observe;
 
 import ru.geekbrains.lessions2345.notepadonfragments_2.model.DeleteAnswersTypes;
 
-public interface Observer {
+public interface ObserverOriginalJava {
     void completeGoogleAuthorise(boolean completeGoogleAuthorise);
 
     void updateDatesFromFireBase(int numberDownloadedNotes);
