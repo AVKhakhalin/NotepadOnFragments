@@ -116,19 +116,19 @@ class CardsSourceFirebaseImplKotlinNotWork : CardSource {
         TODO("Not yet implemented")
     }
 
-    override fun addCardNote(cardNote: CardNote?) {
+    override fun addCardNote(cardNote: CardNote) {
         TODO("Not yet implemented")
     }
 
-    override fun setCardNote(position: Int, cardNote: CardNote?) {
+    override fun setCardNote(position: Int, cardNote: CardNote) {
         TODO("Not yet implemented")
     }
 
-    override fun setCardNote(position: Int, name: String?, description: String?) {
+    override fun setCardNote(position: Int, name: String, description: String) {
         TODO("Not yet implemented")
     }
 
-    override fun setCardNote(position: Int, text: String?) {
+    override fun setCardNote(position: Int, text: String) {
         TODO("Not yet implemented")
     }
 
