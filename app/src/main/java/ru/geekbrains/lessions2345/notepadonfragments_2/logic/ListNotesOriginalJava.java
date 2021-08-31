@@ -1,6 +1,6 @@
 package ru.geekbrains.lessions2345.notepadonfragments_2.logic;
 
-public class ListNotes {
+public class ListNotesOriginalJava {
     // Список имён заметок
     private String[] names;
     // Список кратких описаний заметок
@@ -8,7 +8,7 @@ public class ListNotes {
     // Список дат создания заметок
     private String[] dates;
 
-    public ListNotes(String[] names, String[] descriptions, String[] dates) {
+    public ListNotesOriginalJava(String[] names, String[] descriptions, String[] dates) {
         this.names = names;
         this.descriptions = descriptions;
         this.dates = dates;
@@ -43,7 +43,7 @@ public class ListNotes {
     }
 
     public void addNote(int index, String name, String description, String date) {
-        int newArraySize = name.length() + 1;
+        int newArraySize = names.length + 1;
         if (index < newArraySize) {
             String[] newNames = new String[newArraySize];
             String[] newDescriptions = new String[newArraySize];
