@@ -1,6 +1,6 @@
 package ru.geekbrains.lessions2345.notepadonfragments_2.model;
 
-public class Constants {
+public class ConstantsOriginalJava {
     public static final int LIST_NAMES_SIZE = 23;
     public static final int LIST_DATES_SIZE = 17;
     public static final String KEY_CARD_SOURCE_IMPLEMENT = "CardSourceImplement";
