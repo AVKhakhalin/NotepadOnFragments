@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
 
     private CardSourceImplement cardSourceImplement;
     private EditCardFragment editCardFragment;
-    private Constants constants = new Constants();
+    public Constants constants = new Constants();
     private DataTypes typeSourceData = DataTypes.FIREBASE_DATA;
     private Navigation navigation = new Navigation(getSupportFragmentManager());
     private GoogleAuthoriseFragment googleAuthoriseFragment;
