@@ -43,7 +43,7 @@ public class ListNotes {
     }
 
     public void addNote(int index, String name, String description, String date) {
-        int newArraySize = name.length() + 1;
+        int newArraySize = names.length + 1;
         if (index < newArraySize) {
             String[] newNames = new String[newArraySize];
             String[] newDescriptions = new String[newArraySize];
