@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
         if (completeGoogleAuthorise == false) {
             googleAuthoriseFragment = new GoogleAuthoriseFragment();
             googleAuthoriseFragment.setCancelable(false);
-            googleAuthoriseFragment.show(getFragmentManager(), "");
+//            googleAuthoriseFragment.show(getFragmentManager(), "");
+            googleAuthoriseFragment.show(getSupportFragmentManager(), "");
         }
 
         // Восстановление класса notepad после поворота экрана

@@ -30,7 +30,7 @@ import ru.geekbrains.lessions2345.notepadonfragments_2.observe.PublisherGetter;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.Navigation;
 
-public class GoogleAuthoriseFragment extends DialogFragment implements OnClickListener {
+public class GoogleAuthoriseFragmentOriginalJava extends DialogFragment implements OnClickListener {
 
     // Используется, чтобы определить результат Activity регистрации через Google
     private static final int RC_SIGN_IN = 40404;
@@ -49,8 +49,8 @@ public class GoogleAuthoriseFragment extends DialogFragment implements OnClickLi
     private TextView emailView;
     private MaterialButton button_continue;
 
-    public static GoogleAuthoriseFragment newInstance() {
-        GoogleAuthoriseFragment fragment = new GoogleAuthoriseFragment();
+    public static GoogleAuthoriseFragmentOriginalJava newInstance() {
+        GoogleAuthoriseFragmentOriginalJava fragment = new GoogleAuthoriseFragmentOriginalJava();
         return fragment;
     }
 
