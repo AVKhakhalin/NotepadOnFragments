@@ -25,7 +25,7 @@ import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.Navigation;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.NavigationGetter;
 
-public class ListNotesFragment extends Fragment implements ListNotesFragmentOnClickListener {
+public class ListNotesFragmentOriginalJava extends Fragment implements ListNotesFragmentOnClickListener {
 
     private int newYear;
     private int newMonth;
@@ -40,8 +40,8 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
     private Navigation navigation;
     private Publisher publisher = new Publisher();
 
-    public static ListNotesFragment newInstance() {
-        ListNotesFragment listNotesFragment = new ListNotesFragment();
+    public static ListNotesFragmentOriginalJava newInstance() {
+        ListNotesFragmentOriginalJava listNotesFragment = new ListNotesFragmentOriginalJava();
         return listNotesFragment;
     }
 
@@ -212,7 +212,7 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
 
     // Отображение фрагмента с обновлённым списком заметок
     private void updateListNotes() {
-        navigation.addFragment(ListNotesFragment.newInstance(), R.id.list_container, false);
+        navigation.addFragment(ListNotesFragmentOriginalJava.newInstance(), R.id.list_container, false);
 /*
         requireActivity()
             .getSupportFragmentManager()
