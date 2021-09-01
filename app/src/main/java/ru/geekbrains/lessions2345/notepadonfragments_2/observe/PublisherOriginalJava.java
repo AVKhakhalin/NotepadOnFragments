@@ -5,10 +5,11 @@ import java.util.List;
 
 import ru.geekbrains.lessions2345.notepadonfragments_2.model.DeleteAnswersTypes;
 
-public class Publisher {
-    private List<Observer> observers;   // Все обозреватели
+public class PublisherOriginalJava {
+    // Все обозреватели
+    private List<Observer> observers;
 
-    public Publisher() {
+    public PublisherOriginalJava() {
         observers = new ArrayList<>();
     }
 
