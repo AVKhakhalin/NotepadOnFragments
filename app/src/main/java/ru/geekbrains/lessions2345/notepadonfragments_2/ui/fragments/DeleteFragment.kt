@@ -51,8 +51,8 @@ class DeleteFragment : DialogFragment(), DialogInterface.OnClickListener {
     private fun initView(view: View) {
         buttonYes = view.findViewById(R.id.button_yes)
         if (buttonYes != null) {
-            buttonYes!!.setOnClickListener(View.OnClickListener { v: View? ->
-                onYes(v)
+            buttonYes!!.setOnClickListener(View.OnClickListener { view: View ->
+                onYes(view)
             })
         }
         buttonNo = view.findViewById(R.id.button_no)
@@ -70,7 +70,7 @@ class DeleteFragment : DialogFragment(), DialogInterface.OnClickListener {
     }
 
     // Результат нажатия на кнопку подтверждения действия
-    fun onYes(v: View?) {
+    fun onYes(v: View) {
         if (deleteNoteFromContextMenu == false) {
             publisher.notifySingle(DeleteAnswersTypes.YES)
         } else {

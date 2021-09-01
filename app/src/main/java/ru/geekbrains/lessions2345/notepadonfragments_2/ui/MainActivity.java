@@ -201,7 +201,8 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
         } else if (itemId == R.id.action_show_card) {
             // Отображение диалогового фрагмента с просмотром/редактированием карточки заметки
             editCardFragment = new EditCardFragment();
-            editCardFragment.show(getFragmentManager(), "");
+//            editCardFragment.show(getFragmentManager(), "");
+            editCardFragment.show(getSupportFragmentManager(), "");
             return true;
         } else if (itemId == R.id.action_send) {
             Toast.makeText(this, "Переслать заметку", Toast.LENGTH_SHORT).show();

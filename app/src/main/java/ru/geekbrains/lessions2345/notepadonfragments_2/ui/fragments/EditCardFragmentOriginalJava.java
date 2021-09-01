@@ -25,7 +25,7 @@ import ru.geekbrains.lessions2345.notepadonfragments_2.ui.MainActivity;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.Navigation;
 import ru.geekbrains.lessions2345.notepadonfragments_2.ui.NavigationGetter;
 
-public class EditCardFragment extends DialogFragment implements OnClickListener {
+public class EditCardFragmentOriginalJava extends DialogFragment implements OnClickListener {
 
     private final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
     private DatePicker datePicker;

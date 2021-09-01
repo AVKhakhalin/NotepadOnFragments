@@ -196,7 +196,8 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                 // Отображение карточки заметки через контекстное меню
                 mainActivity.getCardSourceImplement().setActiveNoteIndex(position);
                 editCardFragment = new EditCardFragment();
-                editCardFragment.show(getActivity().getFragmentManager(), "");
+//                editCardFragment.show(getActivity().getFragmentManager(), "");
+                editCardFragment.show(getActivity().getSupportFragmentManager(), "");
                 break;
             case R.id.context_menu_action_delete_card:
                 // Удаление карточки через контекстное меню
