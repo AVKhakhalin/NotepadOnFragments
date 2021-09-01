@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import ru.geekbrains.lessions2345.notepadonfragments_2.R;
 import ru.geekbrains.lessions2345.notepadonfragments_2.logic.ListNotes;
 
-public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.ViewHolder> {
+public class ListNotesAdapterOriginalJava extends RecyclerView.Adapter<ListNotesAdapterOriginalJava.ViewHolder> {
 
     private ListNotes listNotes;
     int orientation = 1;
@@ -37,7 +37,7 @@ public class ListNotesAdapter extends RecyclerView.Adapter<ListNotesAdapter.View
         this.listener_date = listener_date;
     }
 
-    public ListNotesAdapter(ListNotes listNotes, int orientation, Fragment fragment) {
+    public ListNotesAdapterOriginalJava(ListNotes listNotes, int orientation, Fragment fragment) {
         this.listNotes = listNotes;
         this.orientation = orientation;
         this.fragment = fragment;
