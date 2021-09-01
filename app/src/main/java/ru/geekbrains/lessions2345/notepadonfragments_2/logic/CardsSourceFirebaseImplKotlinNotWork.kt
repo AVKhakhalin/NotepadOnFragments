@@ -23,7 +23,7 @@ class CardsSourceFirebaseImplKotlinNotWork : CardSource {
     private val collection : CollectionReference = store.collection(CARDS_COLLECTION)
 
     // Загружаемый список карточек
-    private var cardsData : ArrayList<CardNote> = ArrayList<CardNote>()
+    private var cardsData : MutableList<CardNote>? = null
 
     public fun init(cardsSourceResponse : CardSourceResponse) : CardSource {
         // Получить всю коллекцию отсортированную по полю "год"
@@ -42,10 +42,18 @@ class CardsSourceFirebaseImplKotlinNotWork : CardSource {
 //                                var cardData : CardNote = CardNoteMapping.Fields.toCardNote(id, doc)
                                 cardData = CardNoteMapping.Fields.toCardNote(id, doc)
 //                                (cardsData as ArrayList<CardNote>).add(cardData)
-                                cardsData.add(cardData as CardNote)
+                                if (cardsData == null) {
+                                    cardsData = MutableList<CardNote>(1){cardData as CardNote}
+                                } else {
+                                    cardsData?.add(cardData as CardNote)
+                                }
                             }
                         }
-                        Log.d(TAG, "success ${cardsData.size} qnt")
+                        if (cardsData == null) {
+                            Log.d(TAG, "success 0 qnt")
+                        } else {
+                            Log.d(TAG, "success ${cardsData!!.size} qnt")
+                        }
                         cardsSourceResponse.initialized(this)
                     } else {
                         Log.d(TAG, "get failed with ", task.exception)
@@ -63,21 +71,27 @@ class CardsSourceFirebaseImplKotlinNotWork : CardSource {
     }
 
     public fun getCardNoteFirebase(position : Int) : CardNote {
-        return cardsData.get(position)
+        if (cardsData == null) {
+            var emptyCardNote : CardNote = CardNote("Пусто", "Пустая карточка", "Пусто", 0, 0, 0)
+            return emptyCardNote
+        } else {
+            return cardsData!!.get(position)
+        }
     }
 
     public override fun size() : Int {
         if (cardsData == null) {
             return 0
+        } else {
+            return cardsData!!.size
         }
-        return cardsData.size
     }
 
     public fun deleteCardNoteFirebase(position : Int) {
         // Удалить документ с определенном идентификатором
         if (cardsData != null) {
-            collection.document(cardsData.get(position).getId()).delete()
-            cardsData.removeAt(position)
+            collection.document(cardsData!!.get(position).getId()).delete()
+            cardsData!!.removeAt(position)
         }
     }
 
@@ -98,14 +112,21 @@ class CardsSourceFirebaseImplKotlinNotWork : CardSource {
     }
 
     public fun clearCardNoteFirebase() {
-        for (cardData : CardNote in cardsData) {
-            collection.document(cardData.getId()).delete()
+        if (cardsData != null) {
+            for (cardData: CardNote in cardsData!!) {
+                collection.document(cardData.getId()).delete()
+            }
         }
-        cardsData = ArrayList<CardNote>()
+        cardsData = null
     }
 
     override fun getCardNote(position: Int): CardNote {
-        return cardsData.get(position)
+        if (cardsData == null) {
+            var emptyCardNote : CardNote = CardNote("Пусто", "Пустая карточка", "Пусто", 0, 0, 0)
+            return emptyCardNote
+        } else {
+            return cardsData!!.get(position)
+        }
     }
 
     override fun getListNotes(): ListNotes {
