@@ -202,7 +202,8 @@ public class ListNotesFragment extends Fragment implements ListNotesFragmentOnCl
                 // Удаление карточки через контекстное меню
                 // Отображение диалогового фрагмента DeleteFragment с подтверждением удаления заметки из контекстного меню
                 DeleteFragment deleteFragment = new DeleteFragment().newInstance(true, position);
-                deleteFragment.show(requireActivity().getFragmentManager(), "");
+//                deleteFragment.show(requireActivity().getFragmentManager(), "");
+                deleteFragment.show(requireActivity().getSupportFragmentManager(), "");
                 break;
         }
         return super.onContextItemSelected(item);

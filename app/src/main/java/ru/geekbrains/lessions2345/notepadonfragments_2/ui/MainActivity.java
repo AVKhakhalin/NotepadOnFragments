@@ -189,7 +189,8 @@ public class MainActivity extends AppCompatActivity implements PublisherGetter, 
             // Отображение диалогового фрагмента DeleteFragment с подтверждением удаления заметки
             if (getCardSourceImplement().getActiveNoteIndex() > 0) {
                 deleteFragment = new DeleteFragment();
-                deleteFragment.show(getFragmentManager(), "");
+//                deleteFragment.show(getFragmentManager(), "");
+                deleteFragment.show(getSupportFragmentManager(), "");
             } else {
                 Toast.makeText(this, "Для удаления заметки её нужно сначала выбрать в списке слева.", Toast.LENGTH_SHORT).show();
             }

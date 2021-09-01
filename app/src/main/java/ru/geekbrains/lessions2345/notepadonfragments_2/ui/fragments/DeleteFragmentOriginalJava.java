@@ -17,7 +17,7 @@ import ru.geekbrains.lessions2345.notepadonfragments_2.model.DeleteAnswersTypes;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.Publisher;
 import ru.geekbrains.lessions2345.notepadonfragments_2.observe.PublisherGetter;
 
-public class DeleteFragment extends DialogFragment implements OnClickListener {
+public class DeleteFragmentOriginalJava extends DialogFragment implements OnClickListener {
 
     private Button buttonYes;
     private Button buttonNo;
@@ -25,8 +25,8 @@ public class DeleteFragment extends DialogFragment implements OnClickListener {
     boolean deleteNoteFromContextMenu = false;
     int indexChoosedNoteInContextMenu = 0;
 
-    public static DeleteFragment newInstance(boolean deleteNoteFromContextMenu, int position) {
-        DeleteFragment deleteFragment = new DeleteFragment();
+    public static DeleteFragmentOriginalJava newInstance(boolean deleteNoteFromContextMenu, int position) {
+        DeleteFragmentOriginalJava deleteFragment = new DeleteFragmentOriginalJava();
         deleteFragment.setDeleteNoteFromContextMenu(deleteNoteFromContextMenu);
         deleteFragment.setIndexChoosedNoteInContextMenu(position);
         return deleteFragment;
